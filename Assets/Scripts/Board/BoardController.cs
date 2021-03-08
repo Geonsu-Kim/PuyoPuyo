@@ -5,14 +5,16 @@ using UnityEngine;
 public class BoardController : MonoBehaviour
 {
     private bool mInit = false;
-    private Board board;
+    private Board mBoard;
     void Start()
     {
+        Init();
     }
     void Init()
     {
         if (mInit) return;
         mInit = true;
-        board = new Board();
+        mBoard = new Board(transform);
+        mBoard.ComposeGame();
     }
 }

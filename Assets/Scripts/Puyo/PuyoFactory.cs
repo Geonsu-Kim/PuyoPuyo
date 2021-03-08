@@ -9,5 +9,4 @@ public static class PuyoFactory
         Puyo puyo = new Puyo(color);
         return puyo;
     }
-
 }
