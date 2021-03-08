@@ -12,13 +12,10 @@ public class PuyoObj : MonoBehaviour
         mSprite = GetComponent<SpriteRenderer>();
         mPuyo = new Puyo(PuyoColor.NA);
     }
-    private void Start()
-    {
-        UpdateSprite();
-    }
     public void SetColor(PuyoColor color)
     {
         mPuyo.SetPuyoColor(color);
+        UpdateSprite();
     }
     void UpdateSprite()
     {

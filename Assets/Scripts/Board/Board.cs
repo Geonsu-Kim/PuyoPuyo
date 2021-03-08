@@ -8,35 +8,34 @@ public class Board
 
     private Transform mParent;
     private Queue<PuyoColor> mDropSet; public Queue<PuyoColor> MPuyoDropSet { get { return mDropSet; } }
-    private PuyoTsumoObj mNext1;
-    private PuyoTsumoObj mNext2;
-    private PuyoTsumoObj mNext3;
-    private PuyoTsumoObj mCur;
+    private PuyoTsumoObj[] mNext;
     private BoardRule rule;
     public Board(Transform parent)
     {
-        mPuyoes = new Puyo[Util.row, Util.col];
-        rule = new BoardRule();
-        mDropSet = new Queue<PuyoColor>();
         mParent = parent;
+        rule = new BoardRule();
+        mPuyoes = new Puyo[Util.row, Util.col];
+        mNext = new PuyoTsumoObj[4];
+        mDropSet = new Queue<PuyoColor>();
 
     }
     public void CreateTsumo()
     {
-        mCur = PuyoPoolManager.Instance.PuyoTsumoPool[0].GetComponent<PuyoTsumoObj>();
-        mNext1 = PuyoPoolManager.Instance.PuyoTsumoPool[1].GetComponent<PuyoTsumoObj>();
-        mNext2 = PuyoPoolManager.Instance.PuyoTsumoPool[2].GetComponent<PuyoTsumoObj>();
-        mNext3 = PuyoPoolManager.Instance.PuyoTsumoPool[3].GetComponent<PuyoTsumoObj>();
-
-        mCur.transform.SetParent(mParent);
-        mNext1.transform.SetParent(mParent);
-        mNext2.transform.SetParent(mParent);
-        mNext3.transform.SetParent(mParent);
-
-        mCur.Move(Util.startPos);
-        mNext1.Move(Util.next1Pos);
-        mNext2.Move(Util.next2Pos);
-        mNext3.Move(Util.next3Pos);
+        for (int i = 0; i < 4; i++)
+        {
+            mNext[i]= PuyoPoolManager.Instance.PuyoTsumoPool[i].GetComponent<PuyoTsumoObj>();
+            mNext[i].transform.SetParent(mParent);
+            mNext[i].Move(Util.nextPos[i]);
+            SetPuyo(mNext[i]);
+        }
+    }
+    public void SetPuyo(PuyoTsumoObj tsumo)
+    {
+        PuyoColor color1 = mDropSet.Dequeue();
+        PuyoColor color2 = mDropSet.Dequeue();
+        tsumo.SetPuyo(color1, color2);
+        mDropSet.Enqueue(color1);
+        mDropSet.Enqueue(color2);
     }
     public void ComposeGame()
     {

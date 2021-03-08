@@ -9,10 +9,12 @@ public static class Util
     public const int row = 13;
     public const int col = 6;
 
-    public static readonly Vector3 startPos=new Vector3(-7.5f,6.5f);
-    public static readonly Vector3 next1Pos = new Vector3(-2.5f, 4.5f);
-    public static readonly Vector3 next2Pos = new Vector3(-1.5f, 2.5f);
-    public static readonly Vector3 next3Pos = new Vector3(-0.5f, -0.5f);
+
+    public static readonly Vector3[] nextPos =
+        { new Vector3(-7.5f, 6.5f)
+    ,new Vector3(-2.5f, 4.5f)
+    ,new Vector3(-1.5f, 2.5f)
+    ,new Vector3(-0.5f, -0.5f)};
 
     public static int bitCount(int x)
     {
