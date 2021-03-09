@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class PuyoTsumoObj:MonoBehaviour
+public enum DirState//회전 뿌요의 위치를 기준으로
 {
-    private PuyoObj mAround;
-    private PuyoObj mAxis;
-
+    Right,Up,Down,Left
+}
+public class PuyoTsumoObj : MonoBehaviour
+{
+    private PuyoObj mAround; public PuyoObj MAround { get { return mAround; } }
+    private PuyoObj mAxis; public PuyoObj MAXis { get { return mAxis; } }
+    private DirState mState; public DirState MState {get{return mState; }}
     private void Start()
     {
-        
+        mState = DirState.Up;
     }
     public void SetPuyo(PuyoColor color1, PuyoColor color2)
     {
@@ -25,6 +28,8 @@ public class PuyoTsumoObj:MonoBehaviour
     {
         mAxis.transform.SetParent(null);
         mAround.transform.SetParent(null);
+        mAxis = null;
+        mAround = null;
     }
     PuyoObj CallPuyoObj()
     {
@@ -42,5 +47,18 @@ public class PuyoTsumoObj:MonoBehaviour
     {
         transform.position = pos;
     }
+    public void Drop()
+    {
 
+        transform.position = new Vector3(transform.position.x, transform.position.y-0.5f);
+    }
+    public float  ConvertRow()
+    {
+        return transform.position.y + 5.5f;
+    }
+    public float ConvertCol()
+    {
+        return transform.position.x + 2.5f;
+    }
+    
 }

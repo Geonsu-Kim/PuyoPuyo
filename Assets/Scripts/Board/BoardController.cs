@@ -6,6 +6,7 @@ public class BoardController : MonoBehaviour
 {
     private bool mInit = false;
     private Board mBoard;
+    private Controller controller;
     void Start()
     {
         Init();
@@ -15,6 +16,8 @@ public class BoardController : MonoBehaviour
         if (mInit) return;
         mInit = true;
         mBoard = new Board(transform);
+        controller = new Controller(mBoard,transform);
         mBoard.ComposeGame();
+        controller.StartCoroutine(controller.Action());
     }
 }

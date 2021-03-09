@@ -28,7 +28,7 @@ public class PuyoPoolManager : SingletonBase<PuyoPoolManager>
         for (int i = 0; i < 4; i++)
         {
             GameObject newTsumo = Instantiate(puyoTsumoObj);
-            newTsumo.name = string.Copy(puyoTsumoObj.name);
+            newTsumo.name = string.Copy(puyoTsumoObj.name+i);
             PuyoTsumoPool.Add(newTsumo);
         }
     }

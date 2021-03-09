@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PuyoColorConfig
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: c378c3a031206a0408a5c7d6d8f6db49, type: 2}
+  - {fileID: 11400000, guid: fdb248821e659ec4bbfb7fa6a4874830, type: 2}
+  - {fileID: 11400000, guid: 4878a410892aa4c45870c97b44f09f4f, type: 2}
+  - {fileID: 11400000, guid: 6416e26dd54e7ec4a96e70f99320ea6b, type: 2}
