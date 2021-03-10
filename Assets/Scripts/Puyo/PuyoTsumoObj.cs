@@ -43,9 +43,13 @@ public class PuyoTsumoObj : MonoBehaviour
         mAxis.SetColor(color1);
         mAround.SetColor(color2);
     }
-    public void Move(Vector3 pos)
+    public void SetPos(Vector3 pos)
     {
         transform.position = pos;
+    }
+    public void Move(Vector3 pos)
+    {
+        transform.position += pos;
     }
     public void Drop()
     {

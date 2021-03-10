@@ -6,7 +6,9 @@ public class BoardController : MonoBehaviour
 {
     private bool mInit = false;
     private Board mBoard;
-    private Controller controller;
+    private PuyoController mController;
+    private RotateCommand mCommandRot;
+    private MoveCommand mCommandMove;
     void Start()
     {
         Init();
@@ -16,8 +18,18 @@ public class BoardController : MonoBehaviour
         if (mInit) return;
         mInit = true;
         mBoard = new Board(transform);
-        controller = new Controller(mBoard,transform);
+        mController = new PuyoController(mBoard,transform);
+        mCommandRot = new RotateCommand(mController);
+        mCommandMove = new MoveCommand(mController);
         mBoard.ComposeGame();
-        controller.StartCoroutine(controller.Action());
+        mController.StartCoroutine(mController.Action());
+    }
+    public void Rotate(int key)
+    {
+        mCommandRot.Execute(key);
+    }
+    public void Move(int key)
+    {
+        mCommandMove.Execute(key);
     }
 }

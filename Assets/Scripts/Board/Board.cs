@@ -9,7 +9,8 @@ public class Board
     private Transform mParent;
     private Queue<PuyoColor> mDropSet; public Queue<PuyoColor> MPuyoDropSet { get { return mDropSet; } }
     private BoardRule rule;
-    private PuyoTsumoObj[] mNext;
+    private PuyoTsumoObj[] mNext;public PuyoTsumoObj MCurTsumo { get { return mNext[0]; } }
+
     public Board(Transform parent)
     {
         mParent = parent;
@@ -25,7 +26,7 @@ public class Board
         {
             mNext[i] = PuyoPoolManager.Instance.PuyoTsumoPool[i].GetComponent<PuyoTsumoObj>();
             mNext[i].transform.SetParent(mParent);
-            mNext[i].Move(Util.nextPos[i]);
+            mNext[i].SetPos(Util.nextPos[i]);
             SetPuyo(mNext[i]);
         }
     }
@@ -75,8 +76,6 @@ public class Board
             isDropped = MustStop();
 
         } while (!isDropped);
-        yield return YieldInstructionCache.WaitForSeconds(0.16f);
-        mNext[0].Drop();
         PutInBoard(mNext[0].MAround, mNext[0].MAXis);
 
         mNext[0].DetachPuyo();
@@ -100,7 +99,7 @@ public class Board
         SetPuyo(mNext[3]);
         for (int i = 0; i < 4; i++)
         {
-            mNext[i].Move(Util.nextPos[i]);
+            mNext[i].SetPos(Util.nextPos[i]);
         }
     }
 
@@ -113,11 +112,11 @@ public class Board
     {
         float row = mNext[0].ConvertRow();
         float col = mNext[0].ConvertCol();
-        if (row == 0.5f) return true;
+        if (row == 0f) return true;
         if (row - (int)row == 0) return false;
-        
         else
         {
+            row += 0.5f;
             switch (mNext[0].MState)
             {
                 case DirState.Right:
@@ -142,4 +141,42 @@ public class Board
     {
         return mPuyoes[11, 2] != null;
     }
+    public bool CheckMovable(int key)
+    {
+        float row = mNext[0].ConvertRow();
+        float col = mNext[0].ConvertCol();
+        if (key==0)
+        {
+            if (col < 1) return false;
+            switch (mNext[0].MState)
+            {
+                case DirState.Right:
+                    return !ExsistPuyo(row, col - 1);
+                case DirState.Up:
+                    return !ExsistPuyo(row, col-1);
+                case DirState.Down:
+                    return !ExsistPuyo(row - 1, col-1);
+                case DirState.Left:
+                    return col>=2&&!ExsistPuyo(row, col - 2);
+            }
+        }
+        else
+        {
+            if (col >= 5) return false;
+            switch (mNext[0].MState)
+            {
+                case DirState.Right:
+                    return col<=3&&!ExsistPuyo(row, col + 2);
+                case DirState.Up:
+                    return !ExsistPuyo(row , col+1);
+                case DirState.Down:
+                    return !ExsistPuyo(row - 1, col+1);
+                case DirState.Left:
+                    return !ExsistPuyo(row, col + 1);
+            }
+        }
+        return false;
+    }
+
+
 }
