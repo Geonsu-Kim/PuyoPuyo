@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public enum DirState//회전 뿌요의 위치를 기준으로
 {
-    Right,Up,Down,Left
+    Left, Up, Right,Down
 }
 public class PuyoTsumoObj : MonoBehaviour
 {
@@ -51,18 +51,26 @@ public class PuyoTsumoObj : MonoBehaviour
     {
         transform.position += pos;
     }
+    public void Rotate(int key)
+    {
+        int state = (int)mState - key;
+        if (state == -1) state = 3;
+        else if (state == 4) state = 0;
+        mState = (DirState)state;
+        Debug.Log(mState);
+        mAround.transform.localPosition = key*new Vector3(-mAround.transform.localPosition.y, mAround.transform.localPosition.x);
+    }
     public void Drop()
     {
-
         transform.position = new Vector3(transform.position.x, transform.position.y-0.5f);
     }
     public float  ConvertRow()
     {
-        return transform.position.y + 5.5f;
+        return transform.position.y;//+ 5.5f;
     }
     public float ConvertCol()
     {
-        return transform.position.x + 2.5f;
+        return transform.position.x;//+ 2.5f;
     }
     
 }

@@ -5,9 +5,9 @@ using UnityEngine;
 public class MoveCommand : Command
 {
     public MoveCommand(PuyoController _controller) : base(_controller) { }
-    public override void Execute(int keyNum)
+    public override void Execute(int key)
     {
-        controller.Move(keyNum);
+        controller.Move(key);
     }
 
 }

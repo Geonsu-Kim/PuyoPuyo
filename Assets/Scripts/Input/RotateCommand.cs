@@ -6,8 +6,9 @@ public class RotateCommand : Command
 {
 
     public RotateCommand(PuyoController _controller) : base(_controller) { }
-    public override void Execute(int keyNum)
+    public override void Execute(int key)
     {
+        controller.Rotate(key);
     }
 
 }

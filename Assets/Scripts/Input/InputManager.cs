@@ -10,9 +10,9 @@ public class InputManager :MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
-            if (Input.GetKeyDown(KeyCode.Z)) { boardController.Rotate(0); }
-            else if (Input.GetKeyDown(KeyCode.X)) { boardController.Rotate(1); }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow)) { boardController.Move(0); }
+            if (Input.GetKeyDown(KeyCode.Z)) { boardController.Rotate(1); }
+            else if (Input.GetKeyDown(KeyCode.X)) { boardController.Rotate(-1); }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow)) { boardController.Move(-1); }
             else if (Input.GetKeyDown(KeyCode.RightArrow)) { boardController.Move(1); }
         }
     }

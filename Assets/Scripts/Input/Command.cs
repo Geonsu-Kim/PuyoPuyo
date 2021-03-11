@@ -10,7 +10,7 @@ public abstract class Command
     {
         controller = _controller;
     }
-    public abstract void Execute(int keyNum);
+    public abstract void Execute(int key);
 
 }
 
