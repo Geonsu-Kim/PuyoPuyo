@@ -11,10 +11,10 @@ public static class Util
 
 
     public static readonly Vector3[] nextPos =
-        { new Vector3(-0.5f, 6.5f)
-    ,new Vector3(4.5f, 4.5f)
-    ,new Vector3(5.5f, 2.5f)
-    ,new Vector3(6.5f, -0.5f)};
+        { new Vector3(2f, 12f)
+    ,new Vector3(7f, 10f)
+    ,new Vector3(8f, 8f)
+    ,new Vector3(9f, 5f)};
 
     public static int bitCount(int x)
     {

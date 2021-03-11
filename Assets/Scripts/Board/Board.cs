@@ -71,8 +71,9 @@ public class Board
         bool isDropped = false;
         do
         {
-            yield return YieldInstructionCache.WaitForSeconds(0.16f);
             mNext[0].Drop();
+            yield return YieldInstructionCache.WaitForSeconds(0.33f);
+
             isDropped = MustStop();
 
         } while (!isDropped);
@@ -85,8 +86,8 @@ public class Board
     }
     public void PutInBoard(PuyoObj obj1, PuyoObj obj2)
     {
-        mPuyoes[(int)(obj1.transform.position.y + 5.5f), (int)(obj1.transform.position.x + 2.5f)] = obj1.MPuyo;
-        mPuyoes[(int)(obj2.transform.position.y + 5.5f), (int)(obj2.transform.position.x + 2.5f)] = obj2.MPuyo;
+        mPuyoes[(int)(obj1.transform.position.y /*+ 5.5f*/), (int)(obj1.transform.position.x /*+ 2.5f*/)] = obj1.MPuyo;
+        mPuyoes[(int)(obj2.transform.position.y /*+ 5.5f*/), (int)(obj2.transform.position.x /*+ 2.5f*/)] = obj2.MPuyo;
     }
     public void ChangeOrder()
     {
@@ -113,10 +114,9 @@ public class Board
         float row = mNext[0].ConvertRow();
         float col = mNext[0].ConvertCol();
         if (row == 0f) return true;
-        if (row - (int)row == 0) return false;
+        if (row - (int)row != 0) return false;
         else
         {
-            row += 0.5f;
             switch (mNext[0].MState)
             {
                 case DirState.Right:
@@ -145,7 +145,7 @@ public class Board
     {
         float row = mNext[0].ConvertRow();
         float col = mNext[0].ConvertCol();
-        if (key==0)
+        if (key==-1)
         {
             if (col < 1) return false;
             switch (mNext[0].MState)
@@ -177,6 +177,7 @@ public class Board
         }
         return false;
     }
+    
 
 
 }
