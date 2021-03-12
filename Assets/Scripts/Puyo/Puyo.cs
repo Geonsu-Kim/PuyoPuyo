@@ -14,7 +14,7 @@ public class Puyo
     public Puyo(PuyoColor color)
     {
         mAdjCount = 0;
-        mAdjDir = 1 << 4;
+        mAdjDir = 0;
         mColor = color;
     }
     public void SetPuyoColor(PuyoColor color)

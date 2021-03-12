@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum TsumoPos
+{
+    Na=-1,StuckLeft,StuckRight,StraddledLeft,StraddledRight,Intervene,lied
+}
 public class Board
 {
     private Puyo[,] mPuyoes; public Puyo[,] MPuyoes { get { return mPuyoes; } }
@@ -177,7 +180,14 @@ public class Board
         }
         return false;
     }
-    
+    TsumoPos CheckWall()
+    {
+        //벽에 붙어있는 경우
+        //벽에 걸쳐진 경우
+        //벽 사이에 있는 경우
+        //바닥에 누운 경우
+        return TsumoPos.Na;
+    }
 
 
 }

@@ -39,6 +39,7 @@ public class PuyoController
     }
     public void Rotate(int key)
     {
+        
         curTsumo.Rotate(key);
     }
     public void Move(int key)
