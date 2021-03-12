@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
-public enum TsumoPos
+public enum SpecialRotate
 {
-    Na=-1,StuckLeft,StuckRight,StraddledLeft,StraddledRight,Intervene,lied
+    Na = -1, PushUp, PushRight, PushLeft, HalfTurn
 }
 public class Board
 {
@@ -12,7 +13,7 @@ public class Board
     private Transform mParent;
     private Queue<PuyoColor> mDropSet; public Queue<PuyoColor> MPuyoDropSet { get { return mDropSet; } }
     private BoardRule rule;
-    private PuyoTsumoObj[] mNext;public PuyoTsumoObj MCurTsumo { get { return mNext[0]; } }
+    private PuyoTsumoObj[] mNext; public PuyoTsumoObj MCurTsumo { get { return mNext[0]; } }
 
     public Board(Transform parent)
     {
@@ -71,6 +72,7 @@ public class Board
     }
     public IEnumerator DropPuyo(Returnable<bool> ret, Returnable<bool> gameEnd)
     {
+        Debug.Log(mNext[0].MState);
         bool isDropped = false;
         do
         {
@@ -86,6 +88,7 @@ public class Board
         ChangeOrder();
         gameEnd.value = IsGameEnd();
         ret.value = true;
+        Print();
     }
     public void PutInBoard(PuyoObj obj1, PuyoObj obj2)
     {
@@ -134,10 +137,11 @@ public class Board
         }
         return true;
     }
-    bool ExsistPuyo(float row, float col)
+    public bool ExsistPuyo(float row, float col)
     {
-            if (mPuyoes[(int)row, (int)col] == null) 
-                return false;
+        if (row >= Util.row || row < 0 || col >= Util.col||col<0) return true;
+        if (mPuyoes[(int)row, (int)col] == null)
+            return false;
         return true;
     }
     bool IsGameEnd()
@@ -148,46 +152,50 @@ public class Board
     {
         float row = mNext[0].ConvertRow();
         float col = mNext[0].ConvertCol();
-        if (key==-1)
+        if (key == -1)
         {
-            if (col < 1) return false;
             switch (mNext[0].MState)
             {
                 case DirState.Right:
                     return !ExsistPuyo(row, col - 1);
                 case DirState.Up:
-                    return !ExsistPuyo(row, col-1);
+                    return !ExsistPuyo(row, col - 1);
                 case DirState.Down:
-                    return !ExsistPuyo(row - 1, col-1);
+                    return !ExsistPuyo(row - 1, col - 1);
                 case DirState.Left:
-                    return col>=2&&!ExsistPuyo(row, col - 2);
+                    return  !ExsistPuyo(row, col - 2);
             }
         }
         else
         {
-            if (col >= 5) return false;
             switch (mNext[0].MState)
             {
                 case DirState.Right:
-                    return col<=3&&!ExsistPuyo(row, col + 2);
+                    return  !ExsistPuyo(row, col + 2);
                 case DirState.Up:
-                    return !ExsistPuyo(row , col+1);
+                    return !ExsistPuyo(row, col + 1);
                 case DirState.Down:
-                    return !ExsistPuyo(row - 1, col+1);
+                    return !ExsistPuyo(row - 1, col + 1);
                 case DirState.Left:
                     return !ExsistPuyo(row, col + 1);
             }
         }
         return false;
     }
-    TsumoPos CheckWall()
-    {
-        //벽에 붙어있는 경우
-        //벽에 걸쳐진 경우
-        //벽 사이에 있는 경우
-        //바닥에 누운 경우
-        return TsumoPos.Na;
-    }
 
+    public void Print()
+    {
+        StringBuilder sb = new StringBuilder(200);
+        for (int i = 12; i >= 0; i--)
+        {
+            for (int j = 0; j < 6; j++)
+            {
+                if (mPuyoes[i, j] == null) sb.Append("0 ");
+                else sb.Append("1 ");
+            }
+            sb.Append(System.Environment.NewLine);
+        }
+
+    }
 
 }

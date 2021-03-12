@@ -16,6 +16,7 @@ public class PuyoTsumoObj : MonoBehaviour
     }
     public void SetPuyo(PuyoColor color1, PuyoColor color2)
     {
+        mState = DirState.Up;
         mAxis = CallPuyoObj();
         mAround = CallPuyoObj();
         SetColor(color1, color2);
@@ -53,12 +54,24 @@ public class PuyoTsumoObj : MonoBehaviour
     }
     public void Rotate(int key)
     {
+        mState = ChangeRotateState(key);
+        mAround.transform.localPosition = RealRotate(key);
+    }
+    public DirState ChangeRotateState(int key)//회전상태 변환
+    {
         int state = (int)mState - key;
-        if (state == -1) state = 3;
-        else if (state == 4) state = 0;
-        mState = (DirState)state;
-        Debug.Log(mState);
-        mAround.transform.localPosition = key*new Vector3(-mAround.transform.localPosition.y, mAround.transform.localPosition.x);
+        if (state == -1) return DirState.Down;
+        else if (state == 4) return DirState.Left;
+        return (DirState)state;
+    }
+    public Vector3 RealRotate(int key)//실제 회전적용
+    {
+        return key * new Vector3(-mAround.transform.localPosition.y, mAround.transform.localPosition.x);
+    }
+    public Vector3 PredictRotatedPos(int key)
+    {
+        Vector3 rotatedPos = RealRotate(key);
+        return transform.position + rotatedPos;
     }
     public void Drop()
     {
@@ -72,5 +85,4 @@ public class PuyoTsumoObj : MonoBehaviour
     {
         return transform.position.x;//+ 2.5f;
     }
-    
 }
