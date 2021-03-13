@@ -8,20 +8,24 @@ public enum SpecialRotate
 }
 public class Board
 {
-    private Puyo[,] mPuyoes; public Puyo[,] MPuyoes { get { return mPuyoes; } }
-
     private Transform mParent;
-    private Queue<PuyoColor> mDropSet; public Queue<PuyoColor> MPuyoDropSet { get { return mDropSet; } }
     private BoardRule rule;
+    private Puyo[,] mPuyoes; public Puyo[,] MPuyoes { get { return mPuyoes; } }
     private PuyoTsumoObj[] mNext; public PuyoTsumoObj MCurTsumo { get { return mNext[0]; } }
+    private Queue<PuyoColor> mDropSet; public Queue<PuyoColor> MPuyoDropSet { get { return mDropSet; } }
 
+
+    private SortedSet<int> emptyPos;
+    private List<PuyoObj> mMovingPuyo; 
     public Board(Transform parent)
     {
         mParent = parent;
         rule = new BoardRule();
-        mPuyoes = new Puyo[Util.row, Util.col];
         mNext = new PuyoTsumoObj[4];
+        mPuyoes = new Puyo[Util.row, Util.col];
         mDropSet = new Queue<PuyoColor>();
+        emptyPos = new SortedSet<int>();
+        mMovingPuyo = new List<PuyoObj>();
 
     }
     public void CreateTsumo()
@@ -88,12 +92,70 @@ public class Board
         ChangeOrder();
         gameEnd.value = IsGameEnd();
         ret.value = true;
-        Print();
+        yield return WaitForDropping();
+        mMovingPuyo.Clear();
     }
+    public void ArrangePuyo(int col)
+    {
+        emptyPos.Clear();
+        for (int i = 0; i < Util.row; i++)
+        {
+            if (mPuyoes[i, col] == null)
+            {
+                emptyPos.Add(i);
+            }
+        }
+        if (emptyPos.Count == 0) return;
+        int firstValue = emptyPos.Min;
+        for (int i = emptyPos.Min+1; i < Util.row; i++)
+        {
+            Puyo puyo = mPuyoes[i, col];
+            if (puyo == null) continue;
+            puyo.ArrangeDrop(i - firstValue, (i - firstValue)*0.1f);
+            mMovingPuyo.Add(puyo.MObj);
+            mPuyoes[firstValue, col] = puyo;
+            mPuyoes[i, col] = null;
+            emptyPos.Remove(firstValue);
+            emptyPos.Add(i);
+            firstValue = emptyPos.Min; 
+        }
+    }
+    private IEnumerator WaitForDropping()
+    {
+        bool bContinue = false;
+        do
+        {
+            bContinue = false;
+            for (int i = 0; i < mMovingPuyo.Count; i++)
+            {
+                if (mMovingPuyo[i].isDropping)
+                {
+                    bContinue = true;
+                    break;
+                }
+            }
+            yield return YieldInstructionCache.WaitForSeconds(0.05f);
+        } while (bContinue);
+    }
+
+
     public void PutInBoard(PuyoObj obj1, PuyoObj obj2)
     {
-        mPuyoes[(int)(obj1.transform.position.y /*+ 5.5f*/), (int)(obj1.transform.position.x /*+ 2.5f*/)] = obj1.MPuyo;
-        mPuyoes[(int)(obj2.transform.position.y /*+ 5.5f*/), (int)(obj2.transform.position.x /*+ 2.5f*/)] = obj2.MPuyo;
+        int obj1Row = (int)obj1.transform.position.y;
+        int obj1Col = (int)obj1.transform.position.x;
+        int obj2Row = (int)obj2.transform.position.y;
+        int obj2Col = (int)obj2.transform.position.x;
+
+        mPuyoes[obj1Row, obj1Col] = obj1.MPuyo;
+        mPuyoes[obj2Row, obj2Col] = obj2.MPuyo;
+        if (!ExistPuyo(obj1Row-1, obj1Col))
+        {
+            ArrangePuyo(obj1Col);
+        }
+        if (!ExistPuyo(obj2Row-1, obj2Col))
+        {
+            ArrangePuyo(obj2Col);
+        }
     }
     public void ChangeOrder()
     {
@@ -126,18 +188,18 @@ public class Board
             switch (mNext[0].MState)
             {
                 case DirState.Right:
-                    return ExsistPuyo(row - 1, col + 1) || ExsistPuyo(row - 1, col);
+                    return ExistPuyo(row - 1, col + 1) || ExistPuyo(row - 1, col);
                 case DirState.Up:
-                    return ExsistPuyo(row - 1, col);
+                    return ExistPuyo(row - 1, col);
                 case DirState.Down:
-                    return ExsistPuyo(row - 2, col);
+                    return ExistPuyo(row - 2, col);
                 case DirState.Left:
-                    return ExsistPuyo(row - 1, col - 1) || ExsistPuyo(row - 1, col);
+                    return ExistPuyo(row - 1, col - 1) || ExistPuyo(row - 1, col);
             }
         }
         return true;
     }
-    public bool ExsistPuyo(float row, float col)
+    public bool ExistPuyo(float row, float col)
     {
         if (row >= Util.row || row < 0 || col >= Util.col||col<0) return true;
         if (mPuyoes[(int)row, (int)col] == null)
@@ -157,13 +219,13 @@ public class Board
             switch (mNext[0].MState)
             {
                 case DirState.Right:
-                    return !ExsistPuyo(row, col - 1);
+                    return !ExistPuyo(row, col - 1);
                 case DirState.Up:
-                    return !ExsistPuyo(row, col - 1);
+                    return !ExistPuyo(row, col - 1);
                 case DirState.Down:
-                    return !ExsistPuyo(row - 1, col - 1);
+                    return !ExistPuyo(row - 1, col - 1);
                 case DirState.Left:
-                    return  !ExsistPuyo(row, col - 2);
+                    return  !ExistPuyo(row, col - 2);
             }
         }
         else
@@ -171,31 +233,17 @@ public class Board
             switch (mNext[0].MState)
             {
                 case DirState.Right:
-                    return  !ExsistPuyo(row, col + 2);
+                    return  !ExistPuyo(row, col + 2);
                 case DirState.Up:
-                    return !ExsistPuyo(row, col + 1);
+                    return !ExistPuyo(row, col + 1);
                 case DirState.Down:
-                    return !ExsistPuyo(row - 1, col + 1);
+                    return !ExistPuyo(row - 1, col + 1);
                 case DirState.Left:
-                    return !ExsistPuyo(row, col + 1);
+                    return !ExistPuyo(row, col + 1);
             }
         }
         return false;
     }
 
-    public void Print()
-    {
-        StringBuilder sb = new StringBuilder(200);
-        for (int i = 12; i >= 0; i--)
-        {
-            for (int j = 0; j < 6; j++)
-            {
-                if (mPuyoes[i, j] == null) sb.Append("0 ");
-                else sb.Append("1 ");
-            }
-            sb.Append(System.Environment.NewLine);
-        }
-
-    }
 
 }

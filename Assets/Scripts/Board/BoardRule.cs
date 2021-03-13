@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardRule
+public class BoardRule //색패보정
 {
     private int[] mColorCount;
     private int firstTwo;//첫 2수의 색패
