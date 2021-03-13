@@ -9,17 +9,15 @@ public class PuyoController
     private MonoBehaviour mMono;
     
     public PuyoTsumoObj curTsumo { get { return mBoard.MCurTsumo; } }
-    public Puyo[,] puyos { get { return mBoard.MPuyoes; } }
+    public Puyo[,] puyos { get { return mBoard.MPuyos; } }
 
-    Returnable<bool> gameEnd;
-    Returnable<bool> dropped;
+    Returnable<bool> checkAgain;
     public PuyoController(Board board, Transform parent)
     {
         mBoard = board;
         mParent = parent;
         mMono = mParent.GetComponent<MonoBehaviour>();
-        gameEnd = new Returnable<bool>(false);
-        dropped = new Returnable<bool>(false);
+        checkAgain = new Returnable<bool>(true);
     }
     public Coroutine StartCoroutine(IEnumerator routine)
     {
@@ -29,13 +27,14 @@ public class PuyoController
     {
         do
         {
-            dropped.value = false;
+            checkAgain.value = false;
+            yield return mBoard.DropPuyo();
             do
             {
-                yield return mBoard.DropPuyo(dropped, gameEnd);
-            } while (!dropped.value);
+                yield return mBoard.AfterDrop(checkAgain);
+            } while (checkAgain.value);
 
-        } while (!gameEnd.value);
+        } while (!mBoard.IsGameEnd());
     }
     public void Rotate(int key)
     {
