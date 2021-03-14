@@ -1,4 +1,4 @@
-GemPop
+GemPop(진행중)
 =============
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/c42zBaLUXXM/0.jpg)](https://www.youtube.com/watch?v=c42zBaLUXXM)
 
