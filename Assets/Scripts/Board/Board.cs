@@ -9,7 +9,7 @@ public struct PosPair
 }
 public enum SpecialRotate
 {
-    Na = -1, PushUp, PushRight, PushLeft, HalfTurn
+    Na = -1, PushUp, PushRight, PushLeft
 }
 public class Board
 {
@@ -83,15 +83,11 @@ public class Board
     }
     public IEnumerator DropPuyo()
     {
-        bool isDropped = false;
-        do
+        while(!MustStop())
         {
             mNext[0].Drop();
-            yield return YieldInstructionCache.WaitForSeconds(0.33f);
-
-            isDropped = MustStop();
-
-        } while (!isDropped);
+            yield return YieldInstructionCache.WaitForSeconds(0.167f);
+        } 
         PutInBoard(mNext[0].MAround, mNext[0].MAXis);
 
         mNext[0].DetachPuyo();
@@ -122,6 +118,7 @@ public class Board
         yield return PopMatchedPuyo(CheckAgain);
         yield return WaitForDropping();
         MovingPuyo.Clear();
+        print();
     }
     public IEnumerator EvalutateBoard()
     {
@@ -283,6 +280,13 @@ public class Board
             return false;
         return true;
     }
+    public bool IsBetweenWalls()
+    {
+        float row = mNext[0].ConvertRow();
+        float col = mNext[0].ConvertCol();
+        if (ExistPuyo(row, col - 1) && ExistPuyo(row, col + 1)) return true;
+        return false;
+    }
     public bool IsGameEnd()
     {
         return mPuyos[11, 2] != null;
@@ -321,6 +325,31 @@ public class Board
         }
         return false;
     }
-
+    public bool CheckMoving()
+    {
+        for (int i = 0; i < MovingPuyo.Count; i++)
+        {
+            if (MovingPuyo[i].isDropping)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    void print()
+    {
+        StringBuilder sb = new StringBuilder(200);
+        for (int i = 12; i >= 0; i--)
+        {
+            for (int j = 0; j < 6; j++)
+            {
+                if (mPuyos[i, j] == null)
+                    sb.Append("0 ");
+                else sb.Append("1 ");
+            }
+            sb.Append("\n");
+        }
+        Debug.Log(sb.ToString());
+    }
 
 }

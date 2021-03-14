@@ -52,25 +52,34 @@ public class PuyoTsumoObj : MonoBehaviour
     {
         transform.position += pos;
     }
-    public void Rotate(int key)
+    public void Rotate(int key, bool quickTurn, int quickTurnCnt)
     {
-        mState = ChangeRotateState(key);
-        mAround.transform.localPosition = RealRotate(key);
+        mState = ChangeRotateState(key, quickTurn);
+        mAround.transform.localPosition = RealRotate(key, quickTurn);
     }
-    public DirState ChangeRotateState(int key)//회전상태 변환
+    public DirState ChangeRotateState(int key, bool quickTurn)//회전상태 변환
     {
+        if (quickTurn)
+        {
+            if (mState == DirState.Down) return DirState.Up;
+            else { return DirState.Down; }
+        }
+
         int state = (int)mState - key;
+
         if (state == -1) return DirState.Down;
         else if (state == 4) return DirState.Left;
         return (DirState)state;
     }
-    public Vector3 RealRotate(int key)//실제 회전적용
+    public Vector3 RealRotate(int key,bool quickTurn)//실제 회전적용
     {
+        if(quickTurn)
+            return new Vector3(-mAround.transform.localPosition.x, -mAround.transform.localPosition.y);
         return key * new Vector3(-mAround.transform.localPosition.y, mAround.transform.localPosition.x);
     }
-    public Vector3 PredictRotatedPos(int key)
+    public Vector3 PredictRotatedPos(int key, bool quickTurn = false)
     {
-        Vector3 rotatedPos = RealRotate(key);
+        Vector3 rotatedPos = RealRotate(key, quickTurn);
         return transform.position + rotatedPos;
     }
     public void Drop()

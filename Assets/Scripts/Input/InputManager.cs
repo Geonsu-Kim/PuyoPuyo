@@ -8,7 +8,7 @@ public class InputManager :MonoBehaviour
     public BoardController boardController;
     private void Update()
     {
-        if (Input.anyKeyDown)
+        if (Input.anyKeyDown&& !boardController.CheckMoving())
         {
             if (Input.GetKeyDown(KeyCode.Z)) { boardController.Rotate(1); }
             else if (Input.GetKeyDown(KeyCode.X)) { boardController.Rotate(-1); }
