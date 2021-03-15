@@ -83,10 +83,11 @@ public class Board
     }
     public IEnumerator DropPuyo()
     {
-        while(!MustStop())
+        mNext[0].StartFlashing();
+        while (!MustStop())
         {
             mNext[0].Drop();
-            yield return YieldInstructionCache.WaitForSeconds(0.167f);
+            yield return YieldInstructionCache.WaitForSeconds(0.33f);
         } 
         PutInBoard(mNext[0].MAround, mNext[0].MAXis);
 
@@ -118,16 +119,17 @@ public class Board
         yield return PopMatchedPuyo(CheckAgain);
         yield return WaitForDropping();
         MovingPuyo.Clear();
-        print();
+        //print();
     }
     public IEnumerator EvalutateBoard()
     {
+        Puyo puyo = null;
         for (int i = 0; i < Util.row; i++)
         {
             for (int j = 0; j < Util.col; j++)
             {
                 MatchedList.Clear();
-                Puyo puyo = mPuyos[i, j];
+                puyo = mPuyos[i, j];
                 if (puyo==null||puyo.MVisited) continue;
                 puyo.MVisited = true;
                 MatchedList.Add(new PosPair() {x= j,y=i});
@@ -138,7 +140,7 @@ public class Board
                 }
             }
         }
-        ResetVisitedState();
+        UpdateState();
         yield break;
     }
     public IEnumerator PopMatchedPuyo(Returnable<bool> CheckAgain)
@@ -186,7 +188,7 @@ public class Board
         }
         return true;
     }
-    void ResetVisitedState()
+    void UpdateState()//방문 체크,인접 이미지 갱신
     {
         for (int i = 0; i < Util.row; i++)
         {
@@ -195,6 +197,7 @@ public class Board
               
                 if (mPuyos[i,j] == null) continue;
                 mPuyos[i,j].MVisited = false;
+                mPuyos[i, j].UpdateSprite();
             }
         }
     }
@@ -210,9 +213,10 @@ public class Board
         }
         if (emptyPos.Count == 0) return;
         int firstValue = emptyPos.Min;
+        Puyo puyo = null;
         for (int i = emptyPos.Min + 1; i < Util.row; i++)
         {
-            Puyo puyo = mPuyos[i, col];
+            puyo = mPuyos[i, col];
             if (puyo == null) continue;
             puyo.ArrangeDrop(i - firstValue, (i - firstValue) * 0.1f);
             MovingPuyo.Add(puyo.MObj);
@@ -266,6 +270,8 @@ public class Board
             if (mPuyos[ny,nx]==null || mPuyos[ny, nx].MVisited) continue;
             if (puyo.MColor == mPuyos[ny, nx].MColor)
             {
+                puyo.CalcAdj(i,mPuyos[ny,nx]); 
+                mPuyos[ny, nx].CalcAdj(i > 1 ? i - 2 : i + 2,puyo);
                 mPuyos[ny, nx].MVisited = true;
                 MatchedList.Add(new PosPair() {x=nx,y=ny });
                 CheckAdj(mPuyos[ny, nx], ny, nx);

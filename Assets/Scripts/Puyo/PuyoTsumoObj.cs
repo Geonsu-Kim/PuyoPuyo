@@ -27,6 +27,7 @@ public class PuyoTsumoObj : MonoBehaviour
     }
     public void DetachPuyo()
     {
+        mAxis.StopFlashing();
         mAxis.transform.SetParent(null);
         mAround.transform.SetParent(null);
         mAxis = null;
@@ -43,6 +44,10 @@ public class PuyoTsumoObj : MonoBehaviour
     {
         mAxis.SetColor(color1);
         mAround.SetColor(color2);
+    }
+    public void StartFlashing()
+    {
+        mAxis.StartFlahsing();
     }
     public void SetPos(Vector3 pos)
     {
