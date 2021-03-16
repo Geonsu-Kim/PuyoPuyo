@@ -315,7 +315,7 @@ public class Board
                     return !ExistPuyo(row, col - 2);
             }
         }
-        else
+        else if(key ==1)
         {
             switch (mNext[0].MState)
             {
@@ -327,6 +327,20 @@ public class Board
                     return !ExistPuyo(row - 1, col + 1);
                 case DirState.Left:
                     return !ExistPuyo(row, col + 1);
+            }
+        }
+        else 
+        {
+            switch (mNext[0].MState)
+            {
+                case DirState.Right:
+                    return !ExistPuyo(row-1, col + 1)&& !ExistPuyo(row - 1, col);
+                case DirState.Up:
+                    return !ExistPuyo(row-1, col);
+                case DirState.Down:
+                    return !ExistPuyo(row - 2, col);
+                case DirState.Left:
+                    return !ExistPuyo(row - 1, col - 1) && !ExistPuyo(row - 1, col);
             }
         }
         return false;
