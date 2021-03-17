@@ -45,6 +45,10 @@ public class Puyo
         mObj.UpdateSprite(0);
         mObj.ArrangeDrop(distance, duration);
     }
+    public void StartPopping()
+    {
+        mObj.StartPoppoing();
+    }
     public void SetActiveFalse()
     {
         mObj.gameObject.SetActive(false);
@@ -62,11 +66,15 @@ public class Puyo
     }
     public void UpdateSprite()
     {
+        mObj.UpdateSprite(GetAdj());
+    }
+    public int GetAdj()
+    {
         int adjDir = 0;
         for (int i = 0; i < 4; i++)
         {
             if (mAdjPuyo[i] != null) adjDir |= 1 << i;
         }
-        mObj.UpdateSprite(adjDir);
+        return adjDir;
     }
 }

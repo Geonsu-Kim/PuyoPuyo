@@ -113,6 +113,23 @@ public class Board
             yield return YieldInstructionCache.WaitForSeconds(0.05f);
         } while (bContinue);
     }
+    private IEnumerator WaitForPopping()
+    {
+        bool bContinue = false;
+        do
+        {
+            bContinue = false;
+            for (int i = 0; i < PopList.Count; i++)
+            {
+                if (mPuyos[PopList[i].y, PopList[i].x].MObj.isPopping)
+                {
+                    bContinue = true;
+                    break;
+                }
+            }
+            yield return YieldInstructionCache.WaitForSeconds(0.05f);
+        } while (bContinue);
+    }
     public IEnumerator AfterDrop(Returnable<bool> CheckAgain)
     {
         yield return EvalutateBoard();
@@ -154,6 +171,12 @@ public class Board
         CheckAgain.value = true;
         for (int i = 0; i < PopList.Count; i++)
         {
+            mPuyos[PopList[i].y, PopList[i].x].StartPopping();
+        }
+        yield return WaitForPopping();
+        for (int i = 0; i < PopList.Count; i++)
+        {
+
             mPuyos[PopList[i].y, PopList[i].x].SetActiveFalse();
             mPuyos[PopList[i].y, PopList[i].x] = null;
         }
@@ -352,6 +375,18 @@ public class Board
             if (MovingPuyo[i].isDropping)
             {
                 return true;
+            }
+        }
+        return false;
+    }
+    public bool CheckPopping()
+    {
+        for (int i = 0; i < PopList.Count; i++)
+        {
+            if (mPuyos[PopList[i].y, PopList[i].x].MObj.isPopping)
+            {
+                return  true;
+                
             }
         }
         return false;

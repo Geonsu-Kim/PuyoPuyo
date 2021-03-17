@@ -27,7 +27,7 @@ public class PuyoTsumoObj : MonoBehaviour
     }
     public void DetachPuyo()
     {
-        mAxis.StopFlashing();
+        mAxis.SetFlashing(false);
         mAxis.transform.SetParent(null);
         mAround.transform.SetParent(null);
         mAxis = null;
@@ -47,7 +47,7 @@ public class PuyoTsumoObj : MonoBehaviour
     }
     public void StartFlashing()
     {
-        mAxis.StartFlahsing();
+        mAxis.SetFlashing(true);
     }
     public void SetPos(Vector3 pos)
     {
@@ -60,6 +60,7 @@ public class PuyoTsumoObj : MonoBehaviour
     public void Rotate(int key, bool quickTurn, int quickTurnCnt)
     {
         mState = ChangeRotateState(key, quickTurn);
+        //mAround.StartRotate(key, quickTurn);
         mAround.transform.localPosition = RealRotate(key, quickTurn);
     }
     public DirState ChangeRotateState(int key, bool quickTurn)//회전상태 변환

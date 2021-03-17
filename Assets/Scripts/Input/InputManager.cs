@@ -11,7 +11,7 @@ public class InputManager : MonoBehaviour
     public BoardController boardController;
     private void Update()
     {
-        if (!boardController.CheckMoving())
+        if (!boardController.CanControl())
         {
             if (Input.GetKeyDown(KeyCode.Z)) { boardController.Rotate(1); }
             else if (Input.GetKeyDown(KeyCode.X)) { boardController.Rotate(-1); }

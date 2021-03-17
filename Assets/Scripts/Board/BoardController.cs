@@ -32,8 +32,8 @@ public class BoardController : MonoBehaviour
     {
         mCommandMove.Execute(key);
     }
-    public bool CheckMoving()
+    public bool CanControl()
     {
-        return mBoard.CheckMoving();
+        return mBoard.CheckMoving()||mBoard.CheckPopping();
     }
 }
