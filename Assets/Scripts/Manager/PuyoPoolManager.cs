@@ -8,8 +8,13 @@ public class PuyoPoolManager : SingletonBase<PuyoPoolManager>
     [SerializeField] private GameObject puyoObj;
     [SerializeField] private GameObject puyoTsumoObj;
     [SerializeField] private GameObject puyoParticle;
-    private List<GameObject> PuyoPool;
+    [SerializeField] private GameObject puyoNavi;
 
+
+
+
+    private List<GameObject> PuyoPool;
+    public List<GameObject> PuyoNaviPool;
     public List<GameObject> PuyoTsumoPool;
     public List<GameObject> puyoParticlePool;
     void Awake()
@@ -17,6 +22,7 @@ public class PuyoPoolManager : SingletonBase<PuyoPoolManager>
         PuyoPool = new List<GameObject>();
         PuyoTsumoPool = new List<GameObject>();
         puyoParticlePool = new List<GameObject>();
+        PuyoNaviPool = new List<GameObject>();
         CreateObject();
     }
     void CreateObject()
@@ -39,6 +45,11 @@ public class PuyoPoolManager : SingletonBase<PuyoPoolManager>
             GameObject newTsumo = Instantiate(puyoTsumoObj);
             newTsumo.name = string.Copy(puyoTsumoObj.name+i);
             PuyoTsumoPool.Add(newTsumo);
+
+            GameObject newNavi = Instantiate(puyoNavi);
+            puyoNavi.SetActive(false);
+            newNavi.name = string.Copy(puyoNavi.name);
+            PuyoNaviPool.Add(newNavi);
         }
     }
     void InstantiateNewPuyo()
@@ -78,5 +89,15 @@ public class PuyoPoolManager : SingletonBase<PuyoPoolManager>
         }
         return null;
     }
-
+    public PuyoNavi GetNavi()
+    {
+        for (int i = 0; i < PuyoNaviPool.Count; i++)
+        {
+            if (!PuyoNaviPool[i].activeSelf)
+            {
+                return PuyoNaviPool[i].GetComponent<PuyoNavi>();
+            }
+        }
+        return null;
+    }
 }

@@ -32,6 +32,10 @@ public class PuyoObj : MonoBehaviour
         mPuyo.SetPuyoColor(color);
         UpdateSprite(0);
     }
+    public PuyoColor GetColor()
+    {
+        return mPuyo.MColor;
+    }
     public void SetFlashing(bool b)
     {
         if (b)

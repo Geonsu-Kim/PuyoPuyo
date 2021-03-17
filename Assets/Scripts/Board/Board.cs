@@ -394,6 +394,16 @@ public class Board
         }
         return false;
     }
+    public float GetNaviPos(float col)
+    {
+        for (float i = 0; i < Util.row; i++)
+        {
+            if (!ExistPuyo(i, col)) return i;
+        }
+        return Util.INF;
+    }
+
+
     void print()
     {
         StringBuilder sb = new StringBuilder(200);

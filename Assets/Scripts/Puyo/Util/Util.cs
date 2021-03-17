@@ -6,9 +6,9 @@ public static class Util
 {
     public const float x = -9.5f;
     public const float y = -5.5f;
+    public const float INF = 256;
     public const int row = 13;
     public const int col = 6;
-   
 
     public static readonly Vector3[] nextPos =
         { new Vector3(2f, 12f)

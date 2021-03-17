@@ -12,6 +12,10 @@ public class PuyoController
     public PuyoTsumoObj curTsumo { get { return mBoard.MCurTsumo; } }
     public Puyo[,] puyos { get { return mBoard.MPuyos; } }
 
+    private PuyoNavi axis;
+    private PuyoNavi around;
+
+
     Returnable<bool> checkAgain;
     public PuyoController(Board board, Transform parent)
     {
@@ -30,7 +34,9 @@ public class PuyoController
         do
         {
             checkAgain.value = false;
+            SetNavi();
             yield return mBoard.DropPuyo();
+            OffNavi();
             do
             {
                 yield return mBoard.AfterDrop(checkAgain);
@@ -44,6 +50,7 @@ public class PuyoController
         SpecialRotate(key,out quickTurn);
         if (quickTurn && quickTurnCnt == 1) return;
         curTsumo.Rotate(key, quickTurn, quickTurnCnt);
+        SetNaviPos();
     }
     public void SpecialRotate(int key,out bool quickTurn)
     {
@@ -85,5 +92,49 @@ public class PuyoController
             curTsumo.Move(new Vector3(0, -1)); return;
         }
         curTsumo.Move(new Vector3(key, 0));
+        SetNaviPos();
+    }
+    void SetNaviPos()
+    {
+        float col = curTsumo.ConvertCol();
+        float row = mBoard.GetNaviPos(col);
+        switch (curTsumo.MState)
+        {
+            case DirState.Left:
+                axis.SetPos(col, row);
+                around.SetPos(col - 1, row);
+                break;
+            case DirState.Up:
+
+                axis.SetPos(col, row);
+                around.SetPos(col, row+1);
+                break;
+            case DirState.Right:
+                axis.SetPos(col, row);
+                around.SetPos(col+1, row);
+                break;
+            case DirState.Down:
+                axis.SetPos(col, row+1);
+                around.SetPos(col, row);
+                break;
+        }
+
+    }
+
+
+    void SetNavi()
+    {
+        axis = PuyoPoolManager.Instance.GetNavi();
+        axis.SetActive(true);
+        around = PuyoPoolManager.Instance.GetNavi();
+        around.SetActive(true);
+        axis.SetColor(curTsumo.MAXis.GetColor());
+        around.SetColor(curTsumo.MAround.GetColor());
+        SetNaviPos();
+    }
+    void OffNavi()
+    {
+        axis.SetActive(false);
+        around.SetActive(false);
     }
 }
