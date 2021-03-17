@@ -88,7 +88,7 @@ public class Board
         {
             mNext[0].Drop();
             yield return YieldInstructionCache.WaitForSeconds(0.33f);
-        } 
+        }
         PutInBoard(mNext[0].MAround, mNext[0].MAXis);
 
         mNext[0].DetachPuyo();
@@ -147,9 +147,9 @@ public class Board
             {
                 MatchedList.Clear();
                 puyo = mPuyos[i, j];
-                if (puyo==null||puyo.MVisited) continue;
+                if (puyo == null || puyo.MVisited) continue;
                 puyo.MVisited = true;
-                MatchedList.Add(new PosPair() {x= j,y=i});
+                MatchedList.Add(new PosPair() { x = j, y = i });
                 CheckAdj(puyo, i, j);
                 if (MatchedList.Count >= 4)
                 {
@@ -183,7 +183,7 @@ public class Board
         PopList.Clear();
         for (int i = 0; i < Util.col; i++)
         {
-            ArrangePuyo(i);
+            ArrangePuyo(i, true) ;
         }
         yield break;
     }
@@ -217,14 +217,14 @@ public class Board
         {
             for (int j = 0; j < Util.col; j++)
             {
-              
-                if (mPuyos[i,j] == null) continue;
-                mPuyos[i,j].MVisited = false;
+
+                if (mPuyos[i, j] == null) continue;
+                mPuyos[i, j].MVisited = false;
                 mPuyos[i, j].UpdateSprite();
             }
         }
     }
-    void ArrangePuyo(int col)
+    void ArrangePuyo(int col, bool adjustTime = false)
     {
         emptyPos.Clear();
         for (int i = 0; i < Util.row; i++)
@@ -241,7 +241,10 @@ public class Board
         {
             puyo = mPuyos[i, col];
             if (puyo == null) continue;
-            puyo.ArrangeDrop(i - firstValue, (i - firstValue) * 0.1f);
+            if (!adjustTime)
+                puyo.ArrangeDrop(i - firstValue, (i - firstValue) * 0.1f);
+            else
+                puyo.ArrangeDrop(i - firstValue, 0.1f);
             MovingPuyo.Add(puyo.MObj);
             mPuyos[firstValue, col] = puyo;
             mPuyos[i, col] = null;
@@ -290,13 +293,13 @@ public class Board
             int nx = col + Util.Dir[i].x;
             int ny = row + Util.Dir[i].y;
             if (ny >= Util.row || ny < 0 || nx >= Util.col || nx < 0) continue;
-            if (mPuyos[ny,nx]==null || mPuyos[ny, nx].MVisited) continue;
+            if (mPuyos[ny, nx] == null || mPuyos[ny, nx].MVisited) continue;
             if (puyo.MColor == mPuyos[ny, nx].MColor)
             {
-                puyo.CalcAdj(i,mPuyos[ny,nx]); 
-                mPuyos[ny, nx].CalcAdj(i > 1 ? i - 2 : i + 2,puyo);
+                puyo.CalcAdj(i, mPuyos[ny, nx]);
+                mPuyos[ny, nx].CalcAdj(i > 1 ? i - 2 : i + 2, puyo);
                 mPuyos[ny, nx].MVisited = true;
-                MatchedList.Add(new PosPair() {x=nx,y=ny });
+                MatchedList.Add(new PosPair() { x = nx, y = ny });
                 CheckAdj(mPuyos[ny, nx], ny, nx);
             }
 
@@ -338,7 +341,7 @@ public class Board
                     return !ExistPuyo(row, col - 2);
             }
         }
-        else if(key ==1)
+        else if (key == 1)
         {
             switch (mNext[0].MState)
             {
@@ -352,14 +355,14 @@ public class Board
                     return !ExistPuyo(row, col + 1);
             }
         }
-        else 
+        else
         {
             switch (mNext[0].MState)
             {
                 case DirState.Right:
-                    return !ExistPuyo(row-1, col + 1)&& !ExistPuyo(row - 1, col);
+                    return !ExistPuyo(row - 1, col + 1) && !ExistPuyo(row - 1, col);
                 case DirState.Up:
-                    return !ExistPuyo(row-1, col);
+                    return !ExistPuyo(row - 1, col);
                 case DirState.Down:
                     return !ExistPuyo(row - 2, col);
                 case DirState.Left:
@@ -385,8 +388,8 @@ public class Board
         {
             if (mPuyos[PopList[i].y, PopList[i].x].MObj.isPopping)
             {
-                return  true;
-                
+                return true;
+
             }
         }
         return false;

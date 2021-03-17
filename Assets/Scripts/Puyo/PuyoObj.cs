@@ -8,6 +8,7 @@ public class PuyoObj : MonoBehaviour
     private const string paramStop = "Stop";
     private const string paramStart = "paramStart";
     private Puyo mPuyo; public Puyo MPuyo { set { mPuyo = value; } get { return mPuyo; } }
+    private Vector3 prevDest;
     private SpriteRenderer mSprite;
     // private Animator mAnimator;
     public PuyoColorConfig config;
@@ -16,12 +17,14 @@ public class PuyoObj : MonoBehaviour
     public bool isPopping { get; set; }
 
     IEnumerator flashing;
+    IEnumerator prevRotate;
 
     private void Awake()
     {
         mSprite = GetComponent<SpriteRenderer>();
         mPuyo = new Puyo(PuyoColor.NA, this);
         flashing = Flashing();
+        prevDest = this.transform.localPosition;
 
     }
     public void SetColor(PuyoColor color)
@@ -70,7 +73,24 @@ public class PuyoObj : MonoBehaviour
     }
     public void StartRotate(int key, bool quickTurn)
     {
-        StartCoroutine(RotateTo(key, quickTurn));
+        if (prevRotate != null&&isRotating)
+        {
+            StopCoroutine(prevRotate);
+        }
+        prevRotate = RotateTo(key, quickTurn);
+        StartCoroutine(prevRotate);
+    }
+
+    public void CallParticle()
+    {
+        GameObject particle = PuyoPoolManager.Instance.GetParticle();
+        if (particle == null) return;
+        PuyoParticle puyoParticle = particle.GetComponent<PuyoParticle>();
+        particle.transform.position = transform.position;
+        puyoParticle.SetColor(mPuyo.MColor);
+        particle.SetActive(true);
+
+
     }
     private IEnumerator MoveTo(float distance, float duration)
     {
@@ -92,18 +112,17 @@ public class PuyoObj : MonoBehaviour
     {
         float destAngle = quickTurn ? key * 180f : key * 90f;
         destAngle *= Mathf.PI / 180;
-        float time = 0f; float x, y;
         Vector3 start = transform.localPosition;
-        Vector3 to = Vector3.zero;
+        transform.localPosition = prevDest;
+        prevDest = GetRotatePos(start, destAngle);
+        float time = 0f; 
         isRotating = true;
         while (time < 0.125f)
         {
             time += Time.smoothDeltaTime * Time.timeScale;
             float angle = Mathf.Lerp(0, destAngle, time / 0.125f);
-            Debug.Log(angle);
-            x = start.x * Mathf.Cos(angle) - start.y * Mathf.Sin(angle);
-            y = start.x * Mathf.Sin(angle) + start.y * Mathf.Cos(angle);
-            transform.localPosition = new Vector3(x, y);
+
+            transform.localPosition = GetRotatePos(start, angle);
             yield return null;
         }
         isRotating = false;
@@ -123,8 +142,22 @@ public class PuyoObj : MonoBehaviour
 
         yield return null;
         UpdateSprite(17);
-        yield return YieldInstructionCache.WaitForSeconds(0.5f);
+        yield return YieldInstructionCache.WaitForSeconds(0.3f);
+        CallParticle();
+        UpdateSprite(18);
+        yield return YieldInstructionCache.WaitForSeconds(0.1f);
+        UpdateSprite(19);
+
+        yield return YieldInstructionCache.WaitForSeconds(0.1f);
+
         isPopping = false;
 
+    }
+    Vector3 GetRotatePos(Vector3 start,float angle)
+    {
+        float x = start.x * Mathf.Cos(angle) - start.y * Mathf.Sin(angle);
+        float y = start.x * Mathf.Sin(angle) + start.y * Mathf.Cos(angle);
+        Vector3 ret=new Vector3(x,y);
+        return ret;
     }
 }

@@ -25,6 +25,14 @@ public class PuyoTsumoObj : MonoBehaviour
         mAxis.transform.position=new Vector3(transform.position.x, transform.position.y);
         mAround.transform.position = new Vector3(transform.position.x, transform.position.y+1);
     }
+    public PuyoColor GetAxisColor()
+    {
+        return mAxis.MPuyo.MColor;
+    }
+    public PuyoColor GetAroundColor()
+    {
+        return mAround.MPuyo.MColor;
+    }
     public void DetachPuyo()
     {
         mAxis.SetFlashing(false);

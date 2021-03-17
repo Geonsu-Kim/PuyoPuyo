@@ -7,13 +7,16 @@ public class PuyoPoolManager : SingletonBase<PuyoPoolManager>
     // Start is called before the first frame update
     [SerializeField] private GameObject puyoObj;
     [SerializeField] private GameObject puyoTsumoObj;
+    [SerializeField] private GameObject puyoParticle;
     private List<GameObject> PuyoPool;
 
     public List<GameObject> PuyoTsumoPool;
+    public List<GameObject> puyoParticlePool;
     void Awake()
     {
         PuyoPool = new List<GameObject>();
         PuyoTsumoPool = new List<GameObject>();
+        puyoParticlePool = new List<GameObject>();
         CreateObject();
     }
     void CreateObject()
@@ -24,6 +27,12 @@ public class PuyoPoolManager : SingletonBase<PuyoPoolManager>
             newPuyo.SetActive(false);
             newPuyo.name = string.Copy(puyoObj.name);
             PuyoPool.Add(newPuyo);
+
+            GameObject newParticle = Instantiate(puyoParticle);
+            newParticle.SetActive(false);
+            newParticle.name = string.Copy(puyoParticle.name);
+            puyoParticlePool.Add(newParticle);
+
         }
         for (int i = 0; i < 4; i++)
         {
@@ -54,6 +63,17 @@ public class PuyoPoolManager : SingletonBase<PuyoPoolManager>
                     InstantiateNewPuyo();
                     return PuyoPool[i + 1];
                 }
+            }
+        }
+        return null;
+    }
+    public GameObject GetParticle()
+    {
+        for (int i = 0; i < puyoParticlePool.Count; i++)
+        {
+            if (!puyoParticlePool[i].activeSelf)
+            {
+                return puyoParticlePool[i];
             }
         }
         return null;

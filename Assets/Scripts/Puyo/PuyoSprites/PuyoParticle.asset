@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb2f2582f1ee8ad40a83da81be3cd391, type: 3}
+  m_Name: PuyoParticle
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: -7322354810236723355, guid: 1823eccfc1b25554ab69b0504324f499, type: 3}
+  - {fileID: 5427333838355192856, guid: 1823eccfc1b25554ab69b0504324f499, type: 3}
+  - {fileID: 4578440405496290872, guid: 1823eccfc1b25554ab69b0504324f499, type: 3}
+  - {fileID: -4529565403558991312, guid: 1823eccfc1b25554ab69b0504324f499, type: 3}
