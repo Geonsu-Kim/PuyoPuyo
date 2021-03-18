@@ -9,6 +9,8 @@ public class BoardController : MonoBehaviour
     private PuyoController mController;
     private RotateCommand mCommandRot;
     private MoveCommand mCommandMove;
+    [SerializeField]private SoundAsset mBasicSFX;
+    [SerializeField] private SoundAsset mCharacterSpell;
     void Start()
     {
         Init();
@@ -17,8 +19,8 @@ public class BoardController : MonoBehaviour
     {
         if (mInit) return;
         mInit = true;
-        mBoard = new Board(transform);
-        mController = new PuyoController(mBoard,transform);
+        mBoard = new Board(transform, mBasicSFX, mCharacterSpell);
+        mController = new PuyoController(mBoard,transform, mBasicSFX, mCharacterSpell);
         mCommandRot = new RotateCommand(mController);
         mCommandMove = new MoveCommand(mController);
         mBoard.ComposeGame();
@@ -34,6 +36,6 @@ public class BoardController : MonoBehaviour
     }
     public bool CanControl()
     {
-        return mBoard.CheckMoving()||mBoard.CheckPopping();
+        return mBoard.canControl;
     }
 }
