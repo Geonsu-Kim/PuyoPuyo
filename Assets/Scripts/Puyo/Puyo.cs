@@ -36,18 +36,22 @@ public class Puyo
             mAdjPuyo[i] = null;
         }
     }
-    public void ArrangeDrop(float distance,float duration=1.0f)
+    public void ArrangeDrop(float distance,float duration=1.0f,AudioClip clip=null)
     {
         for (int i = 0; i < 4; i++)
         {
             DetachAdj(i);
         }
         mObj.UpdateSprite(0);
-        mObj.ArrangeDrop(distance, duration);
+        mObj.ArrangeDrop(distance, clip, duration);
     }
-    public void StartPopping()
+    public void StartPopping(AudioClip basicSFX=null, AudioClip characterSpell=null)
     {
-        mObj.StartPoppoing();
+        mObj.StartPoppoing(basicSFX, characterSpell);
+    }
+    public void Glow(bool b)
+    {
+        mObj.SetGlow(b);
     }
     public void SetActiveFalse()
     {

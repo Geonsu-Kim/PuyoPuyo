@@ -12,7 +12,6 @@ public class PuyoNavi : MonoBehaviour
     }
     public void SetColor(PuyoColor color)
     {
-        Debug.Log(color);
         spriteRenderer.sprite = puyoSprites.sprites[(int)color];
     }
     public void SetPos(float x,float y)

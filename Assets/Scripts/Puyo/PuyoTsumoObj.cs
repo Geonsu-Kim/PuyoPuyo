@@ -10,6 +10,7 @@ public class PuyoTsumoObj : MonoBehaviour
     private PuyoObj mAround; public PuyoObj MAround { get { return mAround; } }
     private PuyoObj mAxis; public PuyoObj MAXis { get { return mAxis; } }
     private DirState mState; public DirState MState {get{return mState; }}
+    public bool isMoving { get; set; }
     private void Start()
     {
         mState = DirState.Up;
@@ -57,13 +58,35 @@ public class PuyoTsumoObj : MonoBehaviour
     {
         mAxis.SetFlashing(true);
     }
-    public void SetPos(Vector3 pos)
+    public void SetPos(Vector3 pos,bool smooth=false)
     {
-        transform.position = pos;
+        if (!smooth)
+        {
+            transform.position = pos;
+            return;
+        }
+        Vector3 start = transform.position;
+        StartCoroutine(Moving(start, pos));
     }
+
+
     public void Move(Vector3 pos)
     {
+
         transform.position += pos;
+    }
+    private IEnumerator Moving(Vector3 start,Vector3 pos)
+    {
+        isMoving = true;
+        float time = 0f;
+        while (time < 0.33f)
+        {
+            transform.position = Vector3.Lerp(start, pos, time / 0.33f);
+            time += Time.deltaTime * Time.timeScale;
+            yield return null;
+        }
+        transform.position = pos;
+        isMoving = false;
     }
     public void Rotate(int key, bool quickTurn, int quickTurnCnt)
     {

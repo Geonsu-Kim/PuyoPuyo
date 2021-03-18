@@ -23,12 +23,25 @@ public class Board
     private List<PuyoObj> MovingPuyo;
     private List<PosPair> MatchedList;
     private List<PosPair> PopList;
-    public Board(Transform parent)
+    private SoundAsset mBasicSFX;
+    private SoundAsset mCharacterSpell;
+
+    public bool canControl { get; set; }
+
+
+    public Board(Transform parent, SoundAsset basicSFX, SoundAsset characterSpell)
     {
         mParent = parent;
         rule = new BoardRule();
         mNext = new PuyoTsumoObj[4];
         mPuyos = new Puyo[Util.row, Util.col];
+        mBasicSFX = basicSFX;
+        mCharacterSpell = characterSpell;
+        InitContainer();
+        canControl = true;
+    }
+    void InitContainer()
+    {
         mDropSet = new Queue<PuyoColor>();
         emptyPos = new SortedSet<int>();
         MovingPuyo = new List<PuyoObj>();
@@ -44,6 +57,7 @@ public class Board
             mNext[i].SetPos(Util.nextPos[i]);
             SetPuyo(mNext[i]);
         }
+        mNext[0].SetPos(Util.startPos);
     }
     public void SetPuyo(PuyoTsumoObj tsumo)
     {
@@ -84,15 +98,17 @@ public class Board
     public IEnumerator DropPuyo()
     {
         mNext[0].StartFlashing();
+        canControl = true;
         while (!MustStop())
         {
             mNext[0].Drop();
             yield return YieldInstructionCache.WaitForSeconds(0.33f);
         }
+        canControl = false;
+        SoundManager.Instance.PlaySFX(mBasicSFX.clips[7]);
         PutInBoard(mNext[0].MAround, mNext[0].MAXis);
 
         mNext[0].DetachPuyo();
-        ChangeOrder();
         yield return WaitForDropping();
         MovingPuyo.Clear();
     }
@@ -110,7 +126,7 @@ public class Board
                     break;
                 }
             }
-            yield return YieldInstructionCache.WaitForSeconds(0.05f);
+            yield return null;
         } while (bContinue);
     }
     private IEnumerator WaitForPopping()
@@ -127,13 +143,30 @@ public class Board
                     break;
                 }
             }
-            yield return YieldInstructionCache.WaitForSeconds(0.05f);
+            yield return null;
         } while (bContinue);
     }
-    public IEnumerator AfterDrop(Returnable<bool> CheckAgain)
+    private IEnumerator WaitForMoving()
+    {
+        bool bContinue = false;
+        do
+        {
+            bContinue = false;
+            for (int i = 0; i < mNext.Length; i++)
+            {
+                if (mNext[i].isMoving)
+                {
+                    bContinue = true;
+                    break;
+                }
+            }
+            yield return null;
+        } while (bContinue);
+    }
+    public IEnumerator AfterDrop(Returnable<bool> CheckAgain, int chain)
     {
         yield return EvalutateBoard();
-        yield return PopMatchedPuyo(CheckAgain);
+        yield return PopMatchedPuyo(CheckAgain, chain);
         yield return WaitForDropping();
         MovingPuyo.Clear();
         //print();
@@ -160,18 +193,25 @@ public class Board
         UpdateState();
         yield break;
     }
-    public IEnumerator PopMatchedPuyo(Returnable<bool> CheckAgain)
+    public IEnumerator PopMatchedPuyo(Returnable<bool> CheckAgain, int chain)
     {
         if (PopList.Count == 0)
         {
             CheckAgain.value = false;
+            chain = 0;
             yield break;
         }
 
         CheckAgain.value = true;
+        int idx = chain > 6 ? 6 : chain;
+        bool first = true;
         for (int i = 0; i < PopList.Count; i++)
         {
-            mPuyos[PopList[i].y, PopList[i].x].StartPopping();
+            if (first)
+                mPuyos[PopList[i].y, PopList[i].x].StartPopping(mBasicSFX.clips[idx], mCharacterSpell.clips[idx]);
+            else
+                mPuyos[PopList[i].y, PopList[i].x].StartPopping();
+            first = false;
         }
         yield return WaitForPopping();
         for (int i = 0; i < PopList.Count; i++)
@@ -183,7 +223,7 @@ public class Board
         PopList.Clear();
         for (int i = 0; i < Util.col; i++)
         {
-            ArrangePuyo(i, true) ;
+            ArrangePuyo(i, true);
         }
         yield break;
     }
@@ -237,20 +277,32 @@ public class Board
         if (emptyPos.Count == 0) return;
         int firstValue = emptyPos.Min;
         Puyo puyo = null;
+        bool first = true;
         for (int i = emptyPos.Min + 1; i < Util.row; i++)
         {
             puyo = mPuyos[i, col];
             if (puyo == null) continue;
             if (!adjustTime)
-                puyo.ArrangeDrop(i - firstValue, (i - firstValue) * 0.1f);
+                puyo.ArrangeDrop(i - firstValue, (i - firstValue) * 0.1f, mBasicSFX.clips[7]);
             else
-                puyo.ArrangeDrop(i - firstValue, 0.1f);
+            {
+                if (first)
+                {
+                    puyo.ArrangeDrop(i - firstValue, 0.1f, mBasicSFX.clips[7]);
+                }
+                else
+                {
+
+                    puyo.ArrangeDrop(i - firstValue, 0.1f);
+                }
+            }
             MovingPuyo.Add(puyo.MObj);
             mPuyos[firstValue, col] = puyo;
             mPuyos[i, col] = null;
             emptyPos.Remove(firstValue);
             emptyPos.Add(i);
             firstValue = emptyPos.Min;
+            first = false;
         }
     }
 
@@ -272,7 +324,7 @@ public class Board
             ArrangePuyo(obj2Col);
         }
     }
-    void ChangeOrder()
+    public IEnumerator ChangeOrder()
     {
         PuyoTsumoObj temp = mNext[0];
 
@@ -280,11 +332,15 @@ public class Board
         mNext[1] = mNext[2];
         mNext[2] = mNext[3];
         mNext[3] = temp;
-        SetPuyo(mNext[3]);
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
-            mNext[i].SetPos(Util.nextPos[i]);
+            mNext[i].SetPos(Util.nextPos[i], true);
         }
+        yield return WaitForMoving();
+        SetPuyo(mNext[3]);
+        mNext[0].SetPos(Util.startPos);
+        mNext[3].SetPos(Util.nextPos[3]);
+        yield break;
     }
     void CheckAdj(Puyo puyo, int row, int col)
     {
@@ -303,6 +359,21 @@ public class Board
                 CheckAdj(mPuyos[ny, nx], ny, nx);
             }
 
+        }
+    }
+    public void CheckExpected(PuyoColor color, int row, int col, List<Puyo> matched)
+    {
+        for (int i = 0; i < Util.Dir.Length; i++)
+        {
+            int nx = col + Util.Dir[i].x;
+            int ny = row + Util.Dir[i].y;
+            if (ny >= Util.row || ny < 0 || nx >= Util.col || nx < 0) continue;
+            if (mPuyos[ny, nx] == null || matched.Contains(mPuyos[ny, nx])) continue;
+            if (color == mPuyos[ny, nx].MColor)
+            {
+                matched.Add(mPuyos[ny, nx]);
+                CheckExpected(color, ny, nx, matched);
+            }
         }
     }
     public bool ExistPuyo(float row, float col)
@@ -367,29 +438,6 @@ public class Board
                     return !ExistPuyo(row - 2, col);
                 case DirState.Left:
                     return !ExistPuyo(row - 1, col - 1) && !ExistPuyo(row - 1, col);
-            }
-        }
-        return false;
-    }
-    public bool CheckMoving()
-    {
-        for (int i = 0; i < MovingPuyo.Count; i++)
-        {
-            if (MovingPuyo[i].isDropping)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    public bool CheckPopping()
-    {
-        for (int i = 0; i < PopList.Count; i++)
-        {
-            if (mPuyos[PopList[i].y, PopList[i].x].MObj.isPopping)
-            {
-                return true;
-
             }
         }
         return false;
