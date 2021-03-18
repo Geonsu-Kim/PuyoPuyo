@@ -1,6 +1,6 @@
 뿌요뿌요 모작(진행중)
 =============
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/c42zBaLUXXM/0.jpg)](https://www.youtube.com/watch?v=c42zBaLUXXM)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5l6Vl8aPg-4/0.jpg)](https://www.youtube.com/watch?v=5l6Vl8aPg-4)
 
 이미지를 클릭하면 유튜브 링크로 이동합니다.
 
