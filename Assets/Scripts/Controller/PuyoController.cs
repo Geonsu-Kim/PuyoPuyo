@@ -97,11 +97,15 @@ public class PuyoController
     }
     public void Move(int key)
     {
-        if (!mBoard.CheckMovable(key)) return;
+        if (!mBoard.CheckMovable(key)) 
+        {
+
+            return;
+        }
 
         if (key == 0)
         {
-            curTsumo.Move(new Vector3(0, -1)); return;
+            curTsumo.Move(new Vector3(0, -0.5f)); return;
         }
         curTsumo.Move(new Vector3(key, 0));
         SetNaviPos();

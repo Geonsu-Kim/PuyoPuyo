@@ -117,25 +117,7 @@ public class PuyoObj : MonoBehaviour
         }
         time = 0f;
         SoundManager.Instance.PlaySFX(clip);
-        while (time < 4f)
-        {
-            if (time < 2f)
-            {
-                yield return YieldInstructionCache.WaitForSeconds(0.05f);
-                UpdateSprite(20);
-                yield return YieldInstructionCache.WaitForSeconds(0.05f);
-                UpdateSprite(0);
-            }
-            else
-            {
-                yield return YieldInstructionCache.WaitForSeconds(0.05f);
-                UpdateSprite(21);
-                yield return YieldInstructionCache.WaitForSeconds(0.05f);
-                UpdateSprite(0);
-            }
-            time++;
-        }
-        yield return YieldInstructionCache.WaitForSeconds(0.05f);
+        yield return Viberation();
         isDropping = false;
 
     }
@@ -157,16 +139,6 @@ public class PuyoObj : MonoBehaviour
             yield return null;
         }
         isRotating = false;
-    }
-    public IEnumerator Flashing()
-    {
-        do
-        {
-            yield return YieldInstructionCache.WaitForSeconds(0.1f);
-            UpdateSprite(16);
-            yield return YieldInstructionCache.WaitForSeconds(0.1f);
-            UpdateSprite(0);
-        } while (true);
     }
     private IEnumerator Popping(AudioClip basicSFX, AudioClip characterSpell)
     {
@@ -194,6 +166,39 @@ public class PuyoObj : MonoBehaviour
 
         isPopping = false;
 
+    }
+    private IEnumerator Viberation()
+    {
+        float time = 0f;
+        while (time < 4f)
+        {
+            if (time < 2f)
+            {
+                yield return YieldInstructionCache.WaitForSeconds(0.05f);
+                UpdateSprite(20);
+                yield return YieldInstructionCache.WaitForSeconds(0.05f);
+                UpdateSprite(0);
+            }
+            else
+            {
+                yield return YieldInstructionCache.WaitForSeconds(0.05f);
+                UpdateSprite(21);
+                yield return YieldInstructionCache.WaitForSeconds(0.05f);
+                UpdateSprite(0);
+            }
+            time++;
+        }
+        yield return YieldInstructionCache.WaitForSeconds(0.05f);
+    }
+    public IEnumerator Flashing()
+    {
+        do
+        {
+            yield return YieldInstructionCache.WaitForSeconds(0.1f);
+            UpdateSprite(16);
+            yield return YieldInstructionCache.WaitForSeconds(0.1f);
+            UpdateSprite(0);
+        } while (true);
     }
     public IEnumerator Glow()
     {

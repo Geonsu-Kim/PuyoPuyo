@@ -27,6 +27,7 @@ public class Board
     private SoundAsset mCharacterSpell;
 
     public bool canControl { get; set; }
+    public bool softDrop { get { return Input.GetKey(KeyCode.DownArrow); } }
 
 
     public Board(Transform parent, SoundAsset basicSFX, SoundAsset characterSpell)
@@ -101,6 +102,7 @@ public class Board
         canControl = true;
         while (!MustStop())
         {
+            if (softDrop) { yield return null;  continue; }
             mNext[0].Drop();
             yield return YieldInstructionCache.WaitForSeconds(0.33f);
         }
@@ -174,7 +176,7 @@ public class Board
     public IEnumerator EvalutateBoard()
     {
         Puyo puyo = null;
-        for (int i = 0; i < Util.row; i++)
+        for (int i = 0; i < Util.row-1; i++)
         {
             for (int j = 0; j < Util.col; j++)
             {
@@ -348,7 +350,7 @@ public class Board
         {
             int nx = col + Util.Dir[i].x;
             int ny = row + Util.Dir[i].y;
-            if (ny >= Util.row || ny < 0 || nx >= Util.col || nx < 0) continue;
+            if (ny >= Util.row-1 || ny < 0 || nx >= Util.col || nx < 0) continue;
             if (mPuyos[ny, nx] == null || mPuyos[ny, nx].MVisited) continue;
             if (puyo.MColor == mPuyos[ny, nx].MColor)
             {
@@ -367,7 +369,7 @@ public class Board
         {
             int nx = col + Util.Dir[i].x;
             int ny = row + Util.Dir[i].y;
-            if (ny >= Util.row || ny < 0 || nx >= Util.col || nx < 0) continue;
+            if (ny >= Util.row-1 || ny < 0 || nx >= Util.col || nx < 0) continue;
             if (mPuyos[ny, nx] == null || matched.Contains(mPuyos[ny, nx])) continue;
             if (color == mPuyos[ny, nx].MColor)
             {
@@ -428,6 +430,7 @@ public class Board
         }
         else
         {
+            if (row - (int)row != 0) row += 0.5f;
             switch (mNext[0].MState)
             {
                 case DirState.Right:
