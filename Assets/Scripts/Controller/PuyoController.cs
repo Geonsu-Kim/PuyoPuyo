@@ -99,7 +99,6 @@ public class PuyoController
     {
         if (!mBoard.CheckMovable(key)) 
         {
-
             return;
         }
 

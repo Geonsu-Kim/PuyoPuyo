@@ -10,14 +10,20 @@ public class PuyoObj : MonoBehaviour
     private const string paramFlashing = "Flashing";
     private const string paramGlow = "Glow";
     private const string paramWidth = "_ShineWidth";
+
+
+
+    private float destAngle;
+    private Vector3 destPos;
+    private Vector3 start;
     private Puyo mPuyo; public Puyo MPuyo { set { mPuyo = value; } get { return mPuyo; } }
-    private Vector3 prevDest;
     private SpriteRenderer mSprite;
     // private Animator mAnimator;
     public PuyoColorConfig config;
     public bool isDropping { get; set; }
     public bool isRotating { get; set; }
     public bool isPopping { get; set; }
+    public bool isVibing { get; set; }
 
     IEnumerator prevRotate;
 
@@ -25,7 +31,6 @@ public class PuyoObj : MonoBehaviour
     {
         mSprite = GetComponent<SpriteRenderer>();
         mPuyo = new Puyo(PuyoColor.NA, this);
-        prevDest = this.transform.localPosition;
     }
     private void OnEnable()
     {
@@ -67,7 +72,10 @@ public class PuyoObj : MonoBehaviour
     {
         StartCoroutine(Popping(basicSFX, characterSpell));
     }
-
+    public void StartVibing()
+    {
+        StartCoroutine(Viberation());
+    }
     public void UpdateSprite(int num)
     {
         if (num == -1)
@@ -85,6 +93,7 @@ public class PuyoObj : MonoBehaviour
     {
         if (prevRotate != null&&isRotating)
         {
+            transform.localPosition = GetRotatePos(start, destAngle);
             StopCoroutine(prevRotate);
         }
         prevRotate = RotateTo(key, quickTurn);
@@ -123,11 +132,10 @@ public class PuyoObj : MonoBehaviour
     }
     private IEnumerator RotateTo(int key, bool quickTurn)
     {
-        float destAngle = quickTurn ? key * 180f : key * 90f;
+        destAngle = quickTurn ? key * 180f : key * 90f;
         destAngle *= Mathf.PI / 180;
-        Vector3 start = transform.localPosition;
-        transform.localPosition = prevDest;
-        prevDest = GetRotatePos(start, destAngle);
+         start = transform.localPosition;
+        destPos = GetRotatePos(start, destAngle);
         float time = 0f; 
         isRotating = true;
         while (time < 0.125f)
@@ -170,6 +178,7 @@ public class PuyoObj : MonoBehaviour
     private IEnumerator Viberation()
     {
         float time = 0f;
+        isVibing = true;
         while (time < 4f)
         {
             if (time < 2f)
@@ -188,6 +197,7 @@ public class PuyoObj : MonoBehaviour
             }
             time++;
         }
+        isVibing = false;
         yield return YieldInstructionCache.WaitForSeconds(0.05f);
     }
     public IEnumerator Flashing()

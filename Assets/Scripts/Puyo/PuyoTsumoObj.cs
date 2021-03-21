@@ -91,7 +91,7 @@ public class PuyoTsumoObj : MonoBehaviour
     public void Rotate(int key, bool quickTurn, int quickTurnCnt)
     {
         mState = ChangeRotateState(key, quickTurn);
-        //mAround.StartRotate(key, quickTurn);
+      //mAround.StartRotate(key, quickTurn);
         mAround.transform.localPosition = RealRotate(key, quickTurn);
     }
     public DirState ChangeRotateState(int key, bool quickTurn)//회전상태 변환

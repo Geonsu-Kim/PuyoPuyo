@@ -109,7 +109,7 @@ public class Board
         canControl = false;
         SoundManager.Instance.PlaySFX(mBasicSFX.clips[7]);
         PutInBoard(mNext[0].MAround, mNext[0].MAXis);
-
+        yield return WaitForVibing(mNext[0].MAround, mNext[0].MAXis);
         mNext[0].DetachPuyo();
         yield return WaitForDropping();
         MovingPuyo.Clear();
@@ -144,6 +144,19 @@ public class Board
                     bContinue = true;
                     break;
                 }
+            }
+            yield return null;
+        } while (bContinue);
+    }
+    private IEnumerator WaitForVibing(PuyoObj obj1,PuyoObj obj2)
+    {
+        bool bContinue = false;
+        do
+        {
+            bContinue = false;
+            if (obj1.isVibing || obj2.isVibing)
+            {
+                bContinue = true;
             }
             yield return null;
         } while (bContinue);
@@ -321,9 +334,17 @@ public class Board
         {
             ArrangePuyo(obj1Col);
         }
+        else
+        {
+            obj1.StartVibing();
+        }
         if (!ExistPuyo(obj2Row - 1, obj2Col))
         {
             ArrangePuyo(obj2Col);
+        }
+        else
+        {
+            obj2.StartVibing();
         }
     }
     public IEnumerator ChangeOrder()
