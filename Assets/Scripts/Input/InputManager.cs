@@ -10,9 +10,29 @@ public class InputManager : MonoBehaviour
     private float timeOffsetDownArrow=0.02f;
     private int firstInput;
     public BoardController boardController;
+    public bool Pause
+    {
+        get
+        {
+            return UIManager.Instance.Pause;
+        }
+        set
+        {
+            UIManager.Instance.Pause = value;
+        }
+    }
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+
+    }
     private void Update()
     {
-        if (boardController.CanControl())
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Pause = !Pause;
+        }
+        if (boardController.CanControl()&&!Pause)
         {
             if (Input.GetKeyDown(KeyCode.Z)) { boardController.Rotate(1); }
             else if (Input.GetKeyDown(KeyCode.X)) { boardController.Rotate(-1); }
