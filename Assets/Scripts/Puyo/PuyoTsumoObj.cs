@@ -108,8 +108,8 @@ public class PuyoTsumoObj : MonoBehaviour
     public Vector3 RealRotate(int key,bool quickTurn)//실제 회전적용
     {
         if(quickTurn)
-            return new Vector3(-mAround.transform.localPosition.x, -mAround.transform.localPosition.y);
-        return key * new Vector3(-mAround.transform.localPosition.y, mAround.transform.localPosition.x);
+            return new Vector3(-mAround.DestPos.x, -mAround.DestPos.y);
+        return key * new Vector3(-mAround.DestPos.y, mAround.DestPos.x);
     }
     public Vector3 PredictRotatedPos(int key, bool quickTurn = false)
     {

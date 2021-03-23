@@ -13,6 +13,8 @@ public enum SpecialRotate
 }
 public class Board
 {
+
+    private int obj1Row, obj1Col, obj2Row, obj2Col;
     private Transform mParent;
     private BoardRule rule;
     private Puyo[,] mPuyos; public Puyo[,] MPuyos { get { return mPuyos; } }
@@ -109,9 +111,9 @@ public class Board
         canControl = false;
         SoundManager.Instance.PlaySFX(mBasicSFX.clips[7]);
         yield return PutInBoard(mNext[0].MAXis, mNext[0].MAround);
-        yield return WaitForVibing(mNext[0].MAround, mNext[0].MAXis);
-        mNext[0].DetachPuyo();
+       yield return WaitForVibing(mNext[0].MAXis, mNext[0].MAround);
         yield return WaitForDropping();
+        mNext[0].DetachPuyo();
         MovingPuyo.Clear();
     }
     private IEnumerator WaitForDropping()
@@ -150,6 +152,7 @@ public class Board
     }
     private IEnumerator WaitForVibing(PuyoObj obj1,PuyoObj obj2)
     {
+
         bool bContinue = false;
         do
         {
@@ -158,6 +161,7 @@ public class Board
             {
                 bContinue = true;
             }
+
             yield return null;
         } while (bContinue);
     }
@@ -330,11 +334,12 @@ public class Board
         }
 
 
-        int obj1Row = (int)obj1.transform.position.y;
-        int obj1Col = (int)obj1.transform.position.x;
+        obj1Row = Mathf.RoundToInt(obj1.transform.position.y);
+        obj1Col = Mathf.RoundToInt(obj1.transform.position.x);
+        obj2Row = Mathf.RoundToInt(obj2.transform.position.y);
+        obj2Col = Mathf.RoundToInt(obj2.transform.position.x);
 
-        int obj2Row = (int)obj2.transform.position.y;
-        int obj2Col = (int)obj2.transform.position.x;
+
 
         mPuyos[obj1Row, obj1Col] = obj1.MPuyo;
         mPuyos[obj2Row, obj2Col] = obj2.MPuyo;
