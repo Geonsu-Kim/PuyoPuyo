@@ -108,7 +108,7 @@ public class Board
         }
         canControl = false;
         SoundManager.Instance.PlaySFX(mBasicSFX.clips[7]);
-        PutInBoard(mNext[0].MAround, mNext[0].MAXis);
+        yield return PutInBoard(mNext[0].MAXis, mNext[0].MAround);
         yield return WaitForVibing(mNext[0].MAround, mNext[0].MAXis);
         mNext[0].DetachPuyo();
         yield return WaitForDropping();
@@ -321,10 +321,18 @@ public class Board
         }
     }
 
-    void PutInBoard(PuyoObj obj1, PuyoObj obj2)
+    IEnumerator PutInBoard(PuyoObj obj1, PuyoObj obj2)
     {
+        obj1.SetFlashing(false);
+        while (obj2.isRotating)
+        {
+            yield return null;
+        }
+
+
         int obj1Row = (int)obj1.transform.position.y;
         int obj1Col = (int)obj1.transform.position.x;
+
         int obj2Row = (int)obj2.transform.position.y;
         int obj2Col = (int)obj2.transform.position.x;
 

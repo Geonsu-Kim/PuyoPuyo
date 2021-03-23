@@ -10,11 +10,12 @@ public class PuyoObj : MonoBehaviour
     private const string paramFlashing = "Flashing";
     private const string paramGlow = "Glow";
     private const string paramWidth = "_ShineWidth";
+    private const string paramRotate = "RotateTo";
 
 
 
     private float destAngle;
-    private Vector3 destPos;
+    private Vector3 destPos; public Vector3 DestPos { get { return destPos; } }
     private Vector3 start;
     private Puyo mPuyo; public Puyo MPuyo { set { mPuyo = value; } get { return mPuyo; } }
     private SpriteRenderer mSprite;
@@ -24,8 +25,6 @@ public class PuyoObj : MonoBehaviour
     public bool isRotating { get; set; }
     public bool isPopping { get; set; }
     public bool isVibing { get; set; }
-
-    IEnumerator prevRotate;
 
     private void Awake()
     {
@@ -53,7 +52,7 @@ public class PuyoObj : MonoBehaviour
         }
         else
         {
-            StopCoroutine(paramFlashing);
+            StopPrevCoroutine(paramFlashing);
         }
     }
     public void SetGlow(bool b)
@@ -64,7 +63,7 @@ public class PuyoObj : MonoBehaviour
         }
         else
         {
-            StopCoroutine(paramGlow);
+            StopPrevCoroutine(paramGlow);
             mSprite.material.SetFloat(paramWidth, 0f);
         }
     }
@@ -91,15 +90,17 @@ public class PuyoObj : MonoBehaviour
     }
     public void StartRotate(int key, bool quickTurn)
     {
-        if (prevRotate != null&&isRotating)
+        if (isRotating)
         {
             transform.localPosition = GetRotatePos(start, destAngle);
-            StopCoroutine(prevRotate);
+            StopPrevCoroutine(paramRotate);
         }
-        prevRotate = RotateTo(key, quickTurn);
-        StartCoroutine(prevRotate);
+        StartCoroutine(RotateTo(key,quickTurn));
     }
-
+    public void StopPrevCoroutine(string enumerator)
+    {
+        StopCoroutine(enumerator);
+    }
     public void CallParticle()
     {
         GameObject particle = PuyoPoolManager.Instance.GetParticle();
@@ -134,8 +135,9 @@ public class PuyoObj : MonoBehaviour
     {
         destAngle = quickTurn ? key * 180f : key * 90f;
         destAngle *= Mathf.PI / 180;
-         start = transform.localPosition;
-        destPos = GetRotatePos(start, destAngle);
+        start = transform.localPosition;
+
+        destPos = transform.TransformPoint(GetRotatePos(start, destAngle));
         float time = 0f; 
         isRotating = true;
         while (time < 0.125f)
