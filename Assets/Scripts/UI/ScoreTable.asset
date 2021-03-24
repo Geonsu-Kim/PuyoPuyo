@@ -12,5 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15364eeabab50a747b8f9a03d1777c49, type: 3}
   m_Name: ScoreTable
   m_EditorClassIdentifier: 
-  Number: []
-  ChainPower: 
+  Number:
+  - {fileID: 1153609358335282655, guid: 68aa403e82955de4b9e9bc49f4ab4836, type: 3}
+  - {fileID: -954407403647360417, guid: 68aa403e82955de4b9e9bc49f4ab4836, type: 3}
+  - {fileID: 4416017398840927696, guid: 68aa403e82955de4b9e9bc49f4ab4836, type: 3}
+  - {fileID: 2336244456262818857, guid: 68aa403e82955de4b9e9bc49f4ab4836, type: 3}
+  - {fileID: 1942242260851141372, guid: 68aa403e82955de4b9e9bc49f4ab4836, type: 3}
+  - {fileID: -1229778778238591001, guid: 68aa403e82955de4b9e9bc49f4ab4836, type: 3}
+  - {fileID: 8030541633566829780, guid: 68aa403e82955de4b9e9bc49f4ab4836, type: 3}
+  - {fileID: 2489399830184229482, guid: 68aa403e82955de4b9e9bc49f4ab4836, type: 3}
+  - {fileID: 7685518567850607333, guid: 68aa403e82955de4b9e9bc49f4ab4836, type: 3}
+  - {fileID: -1642062628834242098, guid: 68aa403e82955de4b9e9bc49f4ab4836, type: 3}
