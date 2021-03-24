@@ -8,7 +8,7 @@ public class PuyoController
     private Board mBoard;
     private Transform mParent;
     private MonoBehaviour mMono;
-
+    private bool scoreInterval;
     public PuyoTsumoObj curTsumo { get { return mBoard.MCurTsumo; } }
     public Puyo[,] puyos { get { return mBoard.MPuyos; } }
 
@@ -22,6 +22,7 @@ public class PuyoController
     List<Puyo> aroundMatched;
     public PuyoController(Board board, Transform parent, SoundAsset basicSFX,SoundAsset characterSpell)
     {
+        scoreInterval = false;
         quickTurnCnt = 0;
         mBoard = board;
         mParent = parent;
@@ -104,7 +105,12 @@ public class PuyoController
 
         if (key == 0)
         {
-            mBoard.SetScore(1);
+            if (scoreInterval)
+            {
+                mBoard.SetScore(1);
+                scoreInterval = false;
+            }
+            else scoreInterval = true;
             curTsumo.Move(new Vector3(0, -0.5f)); return;
         }
         curTsumo.Move(new Vector3(key, 0));

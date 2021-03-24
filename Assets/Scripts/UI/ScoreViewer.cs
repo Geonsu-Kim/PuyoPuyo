@@ -17,7 +17,6 @@ public class ScoreViewer : MonoBehaviour
             }
         }
         string numString = score.ToString("D8");
-        Debug.Log(numString);
         for (int i = 0; i < Score.Length; i++)
         {
             int num=int.Parse(numString[i].ToString());
