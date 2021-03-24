@@ -14,7 +14,7 @@ public enum SpecialRotate
 public class Board
 {
 
-    private int obj1Row, obj1Col, obj2Row, obj2Col;
+    private int score;
     private Transform mParent;
     private BoardRule rule;
     private Puyo[,] mPuyos; public Puyo[,] MPuyos { get { return mPuyos; } }
@@ -42,6 +42,7 @@ public class Board
         mCharacterSpell = characterSpell;
         InitContainer();
         canControl = true;
+        score = 0;
     }
     void InitContainer()
     {
@@ -75,7 +76,11 @@ public class Board
         CreateDropSet();
         CreateTsumo();
     }
-
+    public void SetScore(int _score)
+    {
+        score += _score;
+        UIManager.instance.SetScore(score);
+    }
     void CreateDropSet()
     {
         for (int i = 0; i < 128; i++)
@@ -220,7 +225,6 @@ public class Board
             chain = 0;
             yield break;
         }
-
         CheckAgain.value = true;
         int idx = chain > 6 ? 6 : chain;
         bool first = true;
@@ -239,6 +243,7 @@ public class Board
             mPuyos[PopList[i].y, PopList[i].x].SetActiveFalse();
             mPuyos[PopList[i].y, PopList[i].x] = null;
         }
+        SetScore((PopList.Count * 10) * Util.ChainPower[chain]);
         PopList.Clear();
         for (int i = 0; i < Util.col; i++)
         {
@@ -334,6 +339,8 @@ public class Board
         }
 
 
+
+         int obj1Row, obj1Col, obj2Row, obj2Col;
         obj1Row = Mathf.RoundToInt(obj1.transform.position.y);
         obj1Col = Mathf.RoundToInt(obj1.transform.position.x);
         obj2Row = Mathf.RoundToInt(obj2.transform.position.y);

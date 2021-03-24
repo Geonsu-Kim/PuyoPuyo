@@ -104,6 +104,7 @@ public class PuyoController
 
         if (key == 0)
         {
+            mBoard.SetScore(1);
             curTsumo.Move(new Vector3(0, -0.5f)); return;
         }
         curTsumo.Move(new Vector3(key, 0));

@@ -8,7 +8,8 @@ using UnityEngine.UI;
 public class UIManager : SingletonBase<UIManager>
 {
     private bool pause;
-    [SerializeField]private GameObject Canvas;
+    [SerializeField]private GameObject Panel_Resume;
+    [SerializeField] private ScoreViewer scoreViewer;
     [SerializeField] private Button btn_Resume;
     [SerializeField] private EventSystem eventSystem;
     public bool Pause
@@ -32,18 +33,22 @@ public class UIManager : SingletonBase<UIManager>
         eventSystem.SetSelectedGameObject(btn_Resume.gameObject);
         btn_Resume.OnSelect(null);
         Time.timeScale = 0;
-        Canvas.SetActive(true);
+        Panel_Resume.SetActive(true);
     }
     public void ResumeGame()
     {
         pause = false;
         Time.timeScale = 1;
-        Canvas.SetActive(false);
+        Panel_Resume.SetActive(false);
     }
     public void StartOverGame()
     {
         SceneManager.LoadScene("SampleScene");
         Time.timeScale = 1;
+    }
+    public void SetScore(int score)
+    {
+        scoreViewer.SetScore(score);
     }
 
 }
