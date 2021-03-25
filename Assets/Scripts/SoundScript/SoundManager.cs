@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum UISound
+{
+    BtnClick=0,FocusMove,Pause,Resume
+}
 public class SoundManager : SingletonBase<SoundManager>
 {
     //public List<AudioClip> BGM;
 
     public int maxSFXSource = 10;
+    public SoundAsset UISet;
     //AudioSource BGMsource;
     AudioSource[] SFXSources;
     private void OnEnable()
@@ -60,6 +65,11 @@ public class SoundManager : SingletonBase<SoundManager>
             }
         }
     }*/
+    public void PlayUISFX(UISound sound)
+    {
+        AudioClip clip = UISet.clips[(int)sound];
+        PlaySFX(clip);
+    }
     public void PlaySFX(AudioClip _clip, bool isLoop = false, float volume = 0.7f)
     {
         if (_clip == null) return;

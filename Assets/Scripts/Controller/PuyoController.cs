@@ -107,7 +107,7 @@ public class PuyoController
         {
             if (scoreInterval)
             {
-                mBoard.SetScore(1);
+                mBoard.SetScore(1,true);
                 scoreInterval = false;
             }
             else scoreInterval = true;

@@ -76,10 +76,14 @@ public class Board
         CreateDropSet();
         CreateTsumo();
     }
-    public void SetScore(int _score)
+    public void SetScore(int _score, bool softDrop = false)
     {
         score += _score;
-        UIManager.instance.SetScore(score);
+        UIManager.instance.SetScore(score, softDrop);
+    }
+    public void SetScoreCalcuration(int popCount,int bonus)
+    {
+        UIManager.instance.SetScoreCalcuration(popCount,bonus);
     }
     void CreateDropSet()
     {
@@ -236,6 +240,7 @@ public class Board
                 mPuyos[PopList[i].y, PopList[i].x].StartPopping();
             first = false;
         }
+        SetScoreCalcuration(PopList.Count * 10, Util.ChainPower[chain]);
         yield return WaitForPopping();
         for (int i = 0; i < PopList.Count; i++)
         {
