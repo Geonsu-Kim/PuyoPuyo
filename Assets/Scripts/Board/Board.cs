@@ -14,7 +14,7 @@ public enum SpecialRotate
 public class Board
 {
 
-    private int score;
+    private int score,maxCountInGroup,colorBit;
     private Transform mParent;
     private BoardRule rule;
     private Puyo[,] mPuyos; public Puyo[,] MPuyos { get { return mPuyos; } }
@@ -43,6 +43,8 @@ public class Board
         InitContainer();
         canControl = true;
         score = 0;
+        maxCountInGroup = 0;
+        colorBit = 0;
     }
     void InitContainer()
     {
@@ -193,6 +195,8 @@ public class Board
     }
     public IEnumerator AfterDrop(Returnable<bool> CheckAgain, int chain)
     {
+        maxCountInGroup = 0;
+        colorBit = 0;
         yield return EvalutateBoard();
         yield return PopMatchedPuyo(CheckAgain, chain);
         yield return WaitForDropping();
@@ -214,6 +218,8 @@ public class Board
                 CheckAdj(puyo, i, j);
                 if (MatchedList.Count >= 4)
                 {
+                    colorBit |= 1 << (int)puyo.MColor;
+                    maxCountInGroup = Mathf.Max(maxCountInGroup, MatchedList.Count-4);
                     PopList.AddRange(MatchedList);
                 }
             }
@@ -223,6 +229,7 @@ public class Board
     }
     public IEnumerator PopMatchedPuyo(Returnable<bool> CheckAgain, int chain)
     {
+        int bonus = 0;
         if (PopList.Count == 0)
         {
             CheckAgain.value = false;
@@ -232,6 +239,8 @@ public class Board
         CheckAgain.value = true;
         int idx = chain > 6 ? 6 : chain;
         bool first = true;
+
+        bonus = Util.ChainPower[chain] + Util.ColorBonus[Util.bitCount(colorBit)-1] + Util.GroupBonus[maxCountInGroup];
         for (int i = 0; i < PopList.Count; i++)
         {
             if (first)
@@ -240,7 +249,7 @@ public class Board
                 mPuyos[PopList[i].y, PopList[i].x].StartPopping();
             first = false;
         }
-        SetScoreCalcuration(PopList.Count * 10, Util.ChainPower[chain]);
+        SetScoreCalcuration(PopList.Count * 10, bonus);
         yield return WaitForPopping();
         for (int i = 0; i < PopList.Count; i++)
         {
@@ -248,7 +257,7 @@ public class Board
             mPuyos[PopList[i].y, PopList[i].x].SetActiveFalse();
             mPuyos[PopList[i].y, PopList[i].x] = null;
         }
-        SetScore((PopList.Count * 10) * Util.ChainPower[chain]);
+        SetScore((PopList.Count * 10) * bonus);
         PopList.Clear();
         for (int i = 0; i < Util.col; i++)
         {

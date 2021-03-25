@@ -17,6 +17,10 @@ public static class Util
     ,new Vector3(8f, 8f)
     ,new Vector3(8f, 5f)};
     public static readonly int[] ChainPower = { 1, 8, 16, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 480, 512 };
+    public static readonly int[] GroupBonus = {0,2,3,4,5,6,7,10 };
+    public static readonly int[] ColorBonus = { 0,3,6,12 };
+
+
     public static readonly Vector2Int[] Dir =
     {
         new Vector2Int(1,0),new Vector2Int(0,1),new Vector2Int(-1,0),new Vector2Int(0,-1)
