@@ -126,6 +126,7 @@ public class PuyoTsumoObj : MonoBehaviour
     }
     public float ConvertCol()
     {
-        return transform.position.x;//+ 2.5f;
+        int _x = (int)transform.position.x;
+        return (float)_x;//+ 2.5f;
     }
 }

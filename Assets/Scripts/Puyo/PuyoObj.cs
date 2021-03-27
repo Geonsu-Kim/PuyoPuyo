@@ -98,7 +98,7 @@ public class PuyoObj : MonoBehaviour
             StopPrevCoroutine(rotateTo);
         }
         rotateTo = RotateTo(key, quickTurn);
-        StartCoroutine(RotateTo(key, quickTurn));
+        StartCoroutine(rotateTo);
     }
     public void StopPrevCoroutine(string enumerator)
     {

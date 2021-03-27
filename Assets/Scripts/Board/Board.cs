@@ -271,6 +271,7 @@ public class Board
     {
         float row = mNext[0].ConvertRow();
         float col = mNext[0].ConvertCol();
+
         if (row == 0f) return true;
         if (row - (int)row != 0) return false;
         else
@@ -353,13 +354,14 @@ public class Board
         }
 
 
-
-         int obj1Row, obj1Col, obj2Row, obj2Col;
+        int obj1Row, obj1Col, obj2Row, obj2Col;
         obj1Row = Mathf.RoundToInt(obj1.transform.position.y);
         obj1Col = Mathf.RoundToInt(obj1.transform.position.x);
         obj2Row = Mathf.RoundToInt(obj2.transform.position.y);
         obj2Col = Mathf.RoundToInt(obj2.transform.position.x);
+        yield return null;
 
+        obj2.transform.position = new Vector3(obj2Col, obj2Row);
 
 
         mPuyos[obj1Row, obj1Col] = obj1.MPuyo;

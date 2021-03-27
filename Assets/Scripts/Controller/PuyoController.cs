@@ -84,6 +84,7 @@ public class PuyoController
 
                 quickTurnCnt = 0;
                 rotatedPos = curTsumo.PredictRotatedPos(key, true);
+
                 if (curTsumo.transform.position.y - (int)curTsumo.transform.position.y > 0) offset = 0.5f;
                 curTsumo.Move(curTsumo.transform.position - rotatedPos - new Vector3(0, offset));
                 return;
