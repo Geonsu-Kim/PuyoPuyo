@@ -36,6 +36,7 @@ public class PuyoObj : MonoBehaviour
     private void OnEnable()
     {
         mSprite.material.SetFloat("_ShineWidth", 0f);
+        destPos=Vector3.up;
     }
     public void SetColor(PuyoColor color)
     {
@@ -92,6 +93,7 @@ public class PuyoObj : MonoBehaviour
     }
     public void StartRotate(int key, bool quickTurn)
     {
+
         transform.localPosition = destPos;
         if (rotateTo!=null&&isRotating)
         {

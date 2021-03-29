@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using System.Reflection;
 
 public struct PosPair
 {
@@ -111,6 +112,11 @@ public class Board
     }
     public IEnumerator DropPuyo()
     {
+            var assembly = Assembly.GetAssembly(typeof(UnityEditor.Editor));
+            var type = assembly.GetType("UnityEditor.LogEntries");
+            var method = type.GetMethod("Clear");
+            method.Invoke(new object(), null);
+        
         mNext[0].StartFlashing();
         canControl = true;
         while (!MustStop())

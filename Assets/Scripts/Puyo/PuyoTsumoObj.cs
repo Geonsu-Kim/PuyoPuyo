@@ -23,8 +23,9 @@ public class PuyoTsumoObj : MonoBehaviour
         SetColor(color1, color2);
         mAxis.transform.SetParent(transform);
         mAround.transform.SetParent(transform);
-        mAxis.transform.position=new Vector3(transform.position.x, transform.position.y);
-        mAround.transform.position = new Vector3(transform.position.x, transform.position.y+1);
+        mAxis.transform.localPosition = Vector3.zero;
+        mAround.transform.localPosition = Vector3.up;
+        
     }
     public PuyoColor GetAxisColor()
     {
